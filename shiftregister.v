@@ -30,9 +30,8 @@ module shiftregister8
 
     assign parallelOut = memory;
 
-    always @(posedge clk) begin
-        if (serialClk==1) begin
-      //always @(posedge serialClk) begin
+    always @(posedge serialClk, clk==1) begin
+
           case (mode)
               `HOLD:  begin memory <= memory[width-1:0];//mantains what it currently has in memory
                       assign serialOut = memory[width-1];    end
@@ -43,6 +42,6 @@ module shiftregister8
               `PLOAD:  begin memory <= parallelIn;  //load in a new value that is coming in as parallelIn into the shiftreg
                       assign serialOut = memory[width-1];    end
           endcase
-          end
+
     end
 endmodule
