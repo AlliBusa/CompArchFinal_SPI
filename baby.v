@@ -3,34 +3,82 @@
 `include "inputconditioner.v"
 `include "LUT.v"
 
-module baby
-#(parameter width = 8)
-(
-  input miso,
-  input address,
-  output mosi,
-  output reg sclk,
-  output cs
+module baby(
+  input MISO,
+  // inputs from whoever is using SPI
+  input SCLK,
+  input CS,
+  input Addr,
+  input Data,
+
+  output MOSI,
+  output SCLK,
+  output CS
 );
- wire serialout, serialin, clk, memEnable, addressEnable,serial,serialEnable, misobuff;
- wire [width-1:0] parallelout,parallelin,dataout;
- wire [1:0] mode;
 
- initial sclk=0;
- always #100 sclk = !sclk;
- 
- shiftregister8 #(width) schwifty (.clk(clk),.parallelOut(parallelout),.serialOut(serialout),.parallelIn(dataout),.mode(mode));
+wire MISOCon, SCLKCon, SCLKPosEdge, SCLKNegEdge, CSCon, DataCon, AddrCon, Sout, SoutDFF;
+wire [7:0] Pin, Pout, PoutData, PoutAddr, AddrCon, DataCon;
 
- testConditioner misoi (.clk(clk),.noisysignal(miso));
+inputconditioner MISOinputConditioner (.clk(CLK),
+                                       .noisysignal(MISO),
+                                       .conditioned(MISOCon),
+                                       .positiveedge(MISOPosEdge),
+                                       .negativeedge(MISONegEdge));
 
- testConditioner sclklk (.clk(clk),.noisysignal(sclk));
+inputconditioner SCLKinputConditioner (.clk(CLK),
+                                       .noisysignal(SCLK),
+                                       .conditioned(SCLKCon),
+                                       .positiveedge(SCLKPosEdge),
+                                       .negativeedge(SCLKNegEdge));
 
- datamemory memoi (.clk(clk),.dataOut(dataout),.address(),.writeEnable(memEnable),.dataIn(datain));
+inputconditioner CSinputConditioner (.clk(CLK),
+                                       .noisysignal(CS),
+                                       .conditioned(CSCon),
+                                       .positiveedge(CSPosEdge),
+                                       .negativeedge(CSNegEdge));
 
- register #(width) addressclk (.clk(clk),.q(address),.d(parallelOut),.wrenable(addressEnable));
+inputconditioner AddrinputConditioner (.clk(CLK),
+                                       .noisysignal(Addr),
+                                       .conditioned(AddrCon),
+                                       .positiveedge(AddrPosEdge),
+                                       .negativeedge(AddrNegEdge));
 
- register #(1) addressclk (.clk(clk),.q(serial),.d(serialout),.wrenable(serialEnable));
+inputconditioner AddrinputConditioner (.clk(CLK),
+                                       .noisysignal(Data),
+                                       .conditioned(DataCon),
+                                       .positiveedge(DataPosEdge),
+                                       .negativeedge(DataNegEdge));
 
- and (mosi,misobuff,serial);
+shiftregister8 ShiftRegBaby (.parallelOut(Pout),
+                             .clk(clk),
+                             .mode(SRWE),
+                             .parallelIn(Pin),
+                             .serialIn(MOSICon));
 
- loot fsm(.clk(clk),.cs(cs),,modes(mode));
+datamemory MemBaby (.clk(clk),
+                    .dataOut(Pin),
+                    .address(PoutAddr),
+                    .writeEnable(DMWE),
+                    .dataIn(Pout));
+
+
+// Sout D-Flip Flip
+wire SoutDFF;
+wire Sout;
+registerDFF SoutDFF #(1) (.q(SoutDFF), .d(Sout), .wrenable(SCLKNegEdge), .clk(CLK));
+
+//MOSI BUFF AND GATE
+
+and (SoutBuff, SoutDFF, MOSIBUFF);
+
+// BUFF to CS
+buf (CS, CSCon);
+
+// SCLK BUFF
+
+buf (SCLK, SCLKCon);
+
+// Pout DFF
+registerDFF PoutDFF #(8) (.q(PoutAddrDFF), .d(PoutAddr), .wrenable(AddrWE), .clk(CLK));
+
+// MUX
