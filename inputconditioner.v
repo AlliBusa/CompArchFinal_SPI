@@ -11,28 +11,42 @@ input 	    clk,            // Clock domain to synchronize input to
 input	    noisysignal,    // (Potentially) noisy input signal
 output reg  conditioned,    // Conditioned output signal
 output reg  positiveedge,   // 1 clk pulse at rising edge of conditioned
-output reg  negativeedge    // 1 clk pulse at falling edge of conditioned
+output reg  negativeedge,    // 1 clk pulse at falling edge of conditioned
+
+output reg synchronizer0UT,
+output reg synchronizer1OUT
 );
 
     parameter counterwidth = 3; // Counter size, in bits, >= log2(waittime)
     parameter waittime = 3;     // Debounce delay, in clock cycles
-    
+
     reg[counterwidth-1:0] counter = 0;
     reg synchronizer0 = 0;
     reg synchronizer1 = 0;
-    
+
     always @(posedge clk ) begin
         if(conditioned == synchronizer1)
             counter <= 0;
+            positiveedge <= 0;
         else begin
             if( counter == waittime) begin
                 counter <= 0;
                 conditioned <= synchronizer1;
+                positiveedge <= 1;
+
             end
-            else 
+            else
                 counter <= counter+1;
         end
+
         synchronizer0 <= noisysignal;
         synchronizer1 <= synchronizer0;
+        synchronizer0UT <= synchronizer0 ;
+        synchronizer1OUT <= synchronizer1;
     end
+    always @(negedge clk) begin
+      if(conditioned == 1)
+        negativeedge <= 1;
+        end
+
 endmodule
