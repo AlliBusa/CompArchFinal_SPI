@@ -1,4 +1,4 @@
-// LUT for
+// LUT for the big boi
 module loot
 (
   output cs,
@@ -8,6 +8,7 @@ module loot
 );
 endmodule
 
+// LUT for the smoller baby
 module lute
 (
   input cs,

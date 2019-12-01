@@ -12,4 +12,4 @@ module SmolBoi (
   wire MOSICon, PosEdge, NegEdge, Sout, MISOBuff;
   wire [7:0] Pin, Pout;
 
-  shiftregister8 ShiftRegSmolBoi (.parallelOut(Pout),.clk(clk),.mode(),.parallelIn,.serialIn());
+  shiftregister8 ShiftRegSmolBoi (.parallelOut(Pout),.clk(clk),.mode(),.parallelIn(Pin),.serialIn(MOSICon));
