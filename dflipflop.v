@@ -1,6 +1,6 @@
 // Single-bit D Flip-Flop with enable
 //   Positive edge triggered
-module register
+module registerDFF
 #(parameter width =1),
 )
 (

@@ -11,7 +11,7 @@ module loot
 
    input 	clk
 );
-endmodule
+endmodule // loot
 
 // LUT for smol boi
 module lute
@@ -76,4 +76,5 @@ module lute
     `ADDI: begin alucntrl=`iADD; regwr=1; memwr=0; regdst=1; alusrc=0; memtoreg=0; jump=0; regorimmu=0; jayall=0; bne=0; beq=0; buttcheek=1; end
     endcase
     end
-endmodule
+endmodule // lute
+
