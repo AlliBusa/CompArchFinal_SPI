@@ -57,8 +57,4 @@ module SmolBoi (
                           .clk(clk),
                           .q(SoutDFF));
 
-<<<<<<< HEAD
-  shiftregister8 ShiftRegSmolBoi (.parallelOut(Pout),.clk(clk),.mode(),.parallelIn(Pin),.serialIn(MOSICon));
-=======
   and MISOBuffAnd (SoutBuff, SoutDFF, MISOBuff);
->>>>>>> b3ef408ef466ff71c8f7fdb84a15fdfdf41de2fa

@@ -2,6 +2,7 @@
 `include "dflipflop.v"
 `include "inputconditioner.v"
 `include "LUT.v"
+`include "multiplexer.v"
 
 module baby(
   input MISO,
@@ -61,6 +62,10 @@ datamemory MemBaby (.clk(clk),
                     .writeEnable(DMWE),
                     .dataIn(Pout));
 
+muxnto1byn datamux (.out(),
+                    .address(DataSelect),
+                    .input0(Pout),
+                    .input1(datacon))                    )
 
 // Sout D-Flip Flip
 wire SoutDFF;
