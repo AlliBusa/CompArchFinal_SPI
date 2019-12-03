@@ -2,6 +2,8 @@
 
 `include "datamemory.v"
 `include "dflipflop.v"
+`include "inputconditioner.v"
+`include "shiftregister.v"
 
 module SmolBoi (
   input MOSI,
@@ -11,7 +13,7 @@ module SmolBoi (
   output MISO
   );
 
-  wire MOSICon, SCLKPosEdge, SCLKNegEdge, CSCon, Sout, SoutDFF, SoutBuff;
+  wire MOSICon, MOSIPosEdge, MOSINegEdge, SCLKCon, SCLKPosEdge, SCLKNegEdge, CSCon, CSPosEdge, CSNegEdge, Sout, SoutDFF, SoutBuff;
   wire [7:0] Pin, Pout, PoutAddr;
 
   // TODO instantiate LUT
@@ -36,25 +38,27 @@ module SmolBoi (
 
 
   shiftregister8 ShiftRegSmolBoi (.parallelOut(Pout),
-                                  .clk(clk),
+                                  .clk(CLK),
                                   .mode(SRWE),
                                   .parallelIn(Pin),
                                   .serialIn(MOSICon));
 
-  datamemory MemSmolBoi (.clk(clk),
+  datamemory MemSmolBoi (.clk(CLK),
                          .dataOut(Pin),
                          .address(PoutAddr),
                          .writeEnable(DMWE),
                          .dataIn(Pout));
 
-  register PoutRegSmolBoi (.d(Pout),
+  registerDFF PoutRegSmolBoi (.d(Pout),
                           .wrenable(AddrWE),
-                          .clk(clk),
+                          .clk(CLK),
                           .q(PoutAddr));
 
-  register SoutRegSmolBoi (.d(Sout),
-                          .wrenable(clk),
-                          .clk(clk),
+  registerDFF SoutRegSmolBoi (.d(Sout),
+                          .wrenable(CLK),
+                          .clk(CLK),
                           .q(SoutDFF));
 
   and MISOBuffAnd (SoutBuff, SoutDFF, MISOBuff);
+
+endmodule

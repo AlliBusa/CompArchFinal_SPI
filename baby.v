@@ -17,8 +17,8 @@ module baby(
   output CS
 );
 
-wire MISOCon, SCLKCon, SCLKPosEdge, SCLKNegEdge, CSCon, DataCon, AddrCon, Sout, SoutDFF;
-wire [7:0] Pin, Pout, PoutData, PoutAddr, AddrCon, DataCon;
+wire MISOCon, SCLKCon, SCLKPosEdge, SCLKNegEdge, CSCon, DataCon, AddrCon, Sout, SoutDFF, BUF_E;
+wire [7:0] Pin, Pout, PoutData, PoutAddr, PoutAddrDFF, AddrCon, DataCon;
 
 inputconditioner MISOinputConditioner (.clk(CLK),
                                        .noisysignal(MISO),
@@ -58,19 +58,31 @@ shiftregister8 ShiftRegBaby (.parallelOut(Pout),
 
 datamemory MemBaby (.clk(clk),
                     .dataOut(Pin),
-                    .address(PoutAddr),
+                    .address(PoutAddrDFF),
                     .writeEnable(DMWE),
-                    .dataIn(Pout));
+                    .dataIn(PoutData));
 
-muxnto1byn datamux (.out(),
+muxnto1byn datamux (.out(PoutData),
                     .address(DataSelect),
                     .input0(Pout),
-                    .input1(datacon))                    )
+                    .input1(datacon));
 
-// Sout D-Flip Flip
-wire SoutDFF;
-wire Sout;
+muxnto1byn addrmux (.out(PoutAddr),
+                    .address(AddrSelect),
+                    .input0(Pout),
+                    .input1(addcon));
+
+loot LUT (.ADDr_WE(AddrWE),
+          .DM_WE(DMWE),
+          .BUF_E(BUF_E),
+          .SR_WE(),
+          .cs()
+          .sclk(),
+          );
+          
 registerDFF SoutDFF #(1) (.q(SoutDFF), .d(Sout), .wrenable(SCLKNegEdge), .clk(CLK));
+
+registerDFF RWDFF #(1) (.q(MOSIBUFF), .d(Addr[7]), .wrenable(BUF_E), .clk(CLK));
 
 //MOSI BUFF AND GATE
 

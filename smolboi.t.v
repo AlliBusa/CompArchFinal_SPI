@@ -1,9 +1,9 @@
-'include "smolboi.v"
+`include "smolboi.v"
 
 `define ASSERT_EQ(val, exp, msg) \
   if (val !== exp) $display("[FAIL] %s (got:0b%b expected:0b%b)", msg, val, exp);
 
-module smolboi_test ():
+module smolboi_test ();
 
 
   initial begin
@@ -20,17 +20,19 @@ module smolboi_test ():
   initial CLK=0;
   always #10 CLK = !CLK;
 
-  intial SCLK =0;
+  initial SCLK =0;
   always #200 SCLK=!SCLK;
   assign CS = 0;
   SmolBoi smolboi(.MOSI(MOSI),.SCLK(SCLK),.CLK(CLK),.CS(CS),.MISO(MISO));
 
-  assign MOSI = 101010101;
-  #100;
-  assign MOSI = 231321414;
-  #100;
-  `ASSERT_EQ(MISO[0:12], 21321313, "Failed")
-  if(MISO[0:12]!= MOSI[0:5]) passed = 0;
+@(posedge CLK)
+  MOSI = 101010101; #100
+  MISO = 231321414; #100
+end
+
+  `ASSERT_EQ(MISO[0:12], 21321313, "Failed");
+
+  if(MISO[12:0]!= MOSI[5:0]) passed = 0;
 
   assign MOSI = 101010101;
   #100;
