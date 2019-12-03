@@ -18,7 +18,7 @@ module shiftregister8
   output [width-1:0]  parallelOut,//output/result
   output reg          serialOut,
   input               clk,
-  input               serialClk,
+  input               serialClkposedge,
   input [1:0]         mode,//will it pload?shift right? etc.
   input [width-1:0]   parallelIn,//input value/ the string to shift
   input               serialIn//what value should we put in all the new spaces created during the shift?
@@ -30,8 +30,8 @@ module shiftregister8
 
     assign parallelOut = memory;
 
-    always @(posedge serialClk, clk==1) begin
-
+    always @(posedge clk) begin
+          if (serialClkposedge == 1) begin
           case (mode)
               `HOLD:  begin memory <= memory[width-1:0];//mantains what it currently has in memory
                       assign serialOut = memory[width-1];    end
@@ -42,6 +42,6 @@ module shiftregister8
               `PLOAD:  begin memory <= parallelIn;  //load in a new value that is coming in as parallelIn into the shiftreg
                       assign serialOut = memory[width-1];    end
           endcase
-
+        end
     end
 endmodule
