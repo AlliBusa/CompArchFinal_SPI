@@ -31,14 +31,19 @@ output reg synchronizer1OUT
         end
 
         else begin
-            if( counter == waittime) begin // after timeout
-                counter <= 0; // reset counter
-                conditioned <= synchronizer1; // output the signal
+            if( counter == waittime and conditioned != 1) begin // after timeout
+                //counter <= 0; // reset counter
+                //conditioned <= synchronizer1; // output the signal
                 positiveedge <= 1; // trigger pos edge for one clk cycle
 
             end
+            else if (counter == waittime and conditioned == 1) begin
+            counter <= 0; // reset counter
+            conditioned <= synchronizer1; // output the signal
+            end
             else
                 counter <= counter+1;
+                positiveedge <= 0;
 
         end
 
@@ -50,7 +55,7 @@ output reg synchronizer1OUT
     always @(negedge clk) begin
       if(conditioned == 1 and counter == waittime)
         negativeedge <= 1;
-        positiveedge <= 0; 
+        positiveedge <= 0;
         end
 
 endmodule
