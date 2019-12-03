@@ -7,15 +7,25 @@
 `define DATAMOD 1'b1
 
 // LUT for baby
+// Switch Nintendo
+// DataFE
+// AddrFE
+// SRM
+// MOSIBUF
+// InFE
 module loot
 (
-   output cs,
-   output modes,
-
+   output nintendo,
+   output SRM,
+	 output DataFE,
+	 output AddrFE,
+	 output BUF,
+	 output InFE,
    input 	clkedge,
 	 input 	sclk,
 	 input 	clk
 );
+	 
 endmodule // loot
 
 // LUT for smol boi
@@ -28,16 +38,15 @@ module lute
  input 			cs, // Chip select
  input 			sout, // Serial out of the shift register storing MOSI input
  input 			clkedge, // sclk edge from input conditioner
- input 			sclk, // sclk
  input 			clk // actual clk
 );
-	 reg 		mod_select; // 1 when in data phase, 0 when in addr phase
+	 reg 			mod_select; // 1 when in data phase, 0 when in addr phase
 	 wire [8:0] count;
 	 wire 			fCount;
-	 reg 					csel = `CSOFF;
+	 reg 				csel = `CSOFF;
 
    shiftregister8 #(9) dut(.clk(clk),
-    											 .serialClk(sclk),
+    											 .serialClk(clkedge),
     											 .mode(fCount),
     											 .parallelIn(9'b1),
     											 .serialIn(1'b0),
@@ -45,9 +54,9 @@ module lute
     											 .serialOut(fCount));
 
 	 registerDFF dffbuf(.clk(clk),
-													 .q(BUF_E),
-													 .d(sout),
-													 .wrenable(fCount));
+											.q(BUF_E),
+											.d(sout),
+											.wrenable(fCount));
 
 	 assign SR_WE = fCount;
 
@@ -65,14 +74,14 @@ module lute
 			mod_select <= `ADDRMOD;
 	 end
 
-   always @(posedge sclk) begin
+   always @(clkedge) begin
 			if (csel == `CSON) begin
 				 case(mod_select)
 					 `ADDRMOD: begin
 							ADDR_WE <= count[7];
 							DM_WE <= 0;
 							if (fCount == 1)
-								 mod_select <= `DATAMOD;
+								mod_select <= `DATAMOD;
 					 end
 					 `DATAMOD: begin
 							ADDR_WE <= 0;
@@ -81,7 +90,8 @@ module lute
 							if (fCount == 1)
 								mod_select <= `ADDRMOD;
 					 end
-				 endcase
-    end
+				 endcase // case (mod_select)
+			end // if (csel == `CSON)
+	 end // always @ (posedge sclk)
 endmodule // lute
 
