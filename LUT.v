@@ -44,7 +44,7 @@ module lute
     											 .parallelOut(count),
     											 .serialOut(fCount));
 
-	 registerDFF #(1) dffbuf(.clk(clk),
+	 registerDFF dffbuf(.clk(clk),
 													 .q(BUF_E),
 													 .d(sout),
 													 .wrenable(fCount));
