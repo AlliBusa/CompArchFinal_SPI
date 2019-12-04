@@ -1,7 +1,7 @@
 `include "datamemory.v"
 `include "dflipflop.v"
 `include "inputconditioner.v"
-`include "LUT.v"
+`include "FSM.v"
 `include "multiplexer.v"
 
 module baby(

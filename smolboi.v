@@ -4,7 +4,7 @@
 `include "dflipflop.v"
 `include "inputconditioner.v"
 `include "shiftregister.v"
-`include "LUT.v"
+`include "FSM.v"
 
 module SmolBoi (
   input MOSI,
