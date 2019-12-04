@@ -23,6 +23,7 @@ module loot
  output 		InFE, // gottem
  input 			cs,
  input 			clkedge,
+ input 			sout,
  input 			clk
 );
 	 reg 			mod_select; // 1 when in data phase, 0 when in addr phase
@@ -63,10 +64,10 @@ module loot
 				 case(mod_select)
 					 `ADDRMOD: begin
 							BUF <= 1'b1;
-							if (count[1] == 1'b1)
-								rwsig <= count[1];
-							if (fCount == 1)
-								mod_select <= `DATAMOD;
+							if (fCount == 1) begin
+								 mod_select <= `DATAMOD;
+								 rwsig <= sout;
+							end
 					 end
 					 `DATAMOD: begin
 						  if (rwsig == 0)

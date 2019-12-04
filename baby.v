@@ -58,9 +58,10 @@ shiftregister8 ShiftRegBaby (.parallelOut(Pout),
                              .clk(clk),
                              .mode(SRWE),
                              .parallelIn(Pin),
-                             .serialIn(MOSICon));
+                             .serialIn(MOSICon),
+														 .serialOut(Sout));
 
-laffy loot(.cs(CSCon), .clkedge(SCLKPosEdge), .clk(clk),
+laffy loot(.cs(CSCon), .clkedge(SCLKPosEdge), .clk(clk), .sout(Sout),
 					 .nintendo(Switch), .SRM(SRWE),
 					 .DataFE(dataenable), .AddrFE(addrenable), .InFE(BuffEn),
 					 .BUF(MOSIBUFF));
