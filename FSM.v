@@ -15,17 +15,71 @@
 // InFE
 module loot
 (
-   output nintendo,
-   output SRM,
-	 output DataFE,
-	 output AddrFE,
-	 output BUF,
-	 output InFE,
-   input 	clkedge,
-	 input 	sclk,
-	 input 	clk
+ output 		nintendo, // gottem
+ output 		SRM, // gottem
+ output reg DataFE, // gottem
+ output reg AddrFE, // gottem
+ output reg BUF,
+ output 		InFE, // gottem
+ input 			cs,
+ input 			clkedge,
+ input 			sout,
+ input 			clk
 );
-	 
+	 reg 			mod_select; // 1 when in data phase, 0 when in addr phase
+	 wire [8:0] count;
+	 wire 			fCount;
+	 reg 				csel = `CSOFF;
+	 reg 				rwsig;
+
+   shiftregister8 #(9) dut(.clk(clk),
+    											 .serialClk(clkedge),
+    											 .mode(fCount),
+    											 .parallelIn(9'b1),
+    											 .serialIn(1'b0),
+    											 .parallelOut(count),
+    											 .serialOut(fCount));
+	 assign InFE = fCount;
+	 assign SRM = count[0];
+	 assign nintendo = rwsig;
+
+	 always @(negedge cs) begin
+			csel = `CSON;
+			DataFE = 1;
+			AddrFE = 1;
+			BUF = 0;
+			rwsig = 0;
+			mod_select = `ADDRMOD;
+	 end
+
+	 always @(posedge cs) begin
+			csel = `CSOFF;
+			BUF = 0;
+	 end
+
+	 always @(clkedge) begin
+			DataFE <= 0;
+			AddrFE <= 0;
+			if (csel == `CSON) begin
+				 case(mod_select)
+					 `ADDRMOD: begin
+							BUF <= 1'b1;
+							if (fCount == 1) begin
+								 mod_select <= `DATAMOD;
+								 rwsig <= sout;
+							end
+					 end
+					 `DATAMOD: begin
+						  if (rwsig == 0)
+								BUF <= 1;
+							else
+								BUF <= 0;
+							if (fCount == 1)
+								mod_select <= `ADDRMOD;
+					 end
+				 endcase // case (mod_select)
+			end // if (csel == `CSON)
+	 end // always @ (clkedge)
 endmodule // loot
 
 // LUT for smol boi
@@ -92,6 +146,6 @@ module lute
 					 end
 				 endcase // case (mod_select)
 			end // if (csel == `CSON)
-	 end // always @ (posedge sclk)
+	 end // always @ (clkedge)
 endmodule // lute
 

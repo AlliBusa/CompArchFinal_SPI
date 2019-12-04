@@ -1,24 +1,28 @@
 `include "datamemory.v"
 `include "dflipflop.v"
 `include "inputconditioner.v"
-`include "LUT.v"
+`include "FSM.v"
 `include "multiplexer.v"
 
 module baby(
   input MISO,
   // inputs from whoever is using SPI
-  input SCLK,
+  input CLK,
   input CS,
   input Addr,
   input Data,
 
   output MOSI,
-  output SCLK,
+  output reg SCLK,
   output CS
 );
 
-wire MISOCon, SCLKCon, SCLKPosEdge, SCLKNegEdge, CSCon, DataCon, AddrCon, Sout, SoutDFF, BUF_E;
-wire [7:0] Pin, Pout, PoutData, PoutAddr, PoutAddrDFF, AddrCon, DataCon;
+initial SCLK =0;
+
+always #20 SCLK = !SCLK;
+
+wire MISOCon, SCLKCon, SCLKPosEdge, SCLKNegEdge, CSCon, Sout, SoutDFF, BUF_E, dataenable, addrenable,SIN, BuffEn;
+wire [7:0] Pin, Pout, PoutData, PoutAddr, PoutAddrDFF, addrcon, datacon, SPIBuffer, datasaved, addrsaved;
 
 inputconditioner MISOinputConditioner (.clk(CLK),
                                        .noisysignal(MISO),
@@ -40,13 +44,13 @@ inputconditioner CSinputConditioner (.clk(CLK),
 
 inputconditioner AddrinputConditioner (.clk(CLK),
                                        .noisysignal(Addr),
-                                       .conditioned(AddrCon),
+                                       .conditioned(addrcon),
                                        .positiveedge(AddrPosEdge),
                                        .negativeedge(AddrNegEdge));
 
-inputconditioner AddrinputConditioner (.clk(CLK),
+inputconditioner DatainputConditioner (.clk(CLK),
                                        .noisysignal(Data),
-                                       .conditioned(DataCon),
+                                       .conditioned(datacon),
                                        .positiveedge(DataPosEdge),
                                        .negativeedge(DataNegEdge));
 
@@ -54,35 +58,21 @@ shiftregister8 ShiftRegBaby (.parallelOut(Pout),
                              .clk(clk),
                              .mode(SRWE),
                              .parallelIn(Pin),
-                             .serialIn(MOSICon));
+                             .serialIn(MOSICon),
+														 .serialOut(Sout));
 
-datamemory MemBaby (.clk(clk),
-                    .dataOut(Pin),
-                    .address(PoutAddrDFF),
-                    .writeEnable(DMWE),
-                    .dataIn(PoutData));
+laffy loot(.cs(CSCon), .clkedge(SCLKPosEdge), .clk(clk), .sout(Sout),
+					 .nintendo(Switch), .SRM(SRWE),
+					 .DataFE(dataenable), .AddrFE(addrenable), .InFE(BuffEn),
+					 .BUF(MOSIBUFF));
 
-muxnto1byn datamux (.out(PoutData),
-                    .address(DataSelect),
-                    .input0(Pout),
-                    .input1(datacon));
+registerDFF #(1) SoutDFF (.q(SoutDFF), .d(Sout), .wrenable(SCLKNegEdge), .clk(CLK));
 
-muxnto1byn addrmux (.out(PoutAddr),
-                    .address(AddrSelect),
-                    .input0(Pout),
-                    .input1(addcon));
+registerDFF #(1) RWDFF (.q(MOSIBUFF), .d(Addr[7]), .wrenable(BUF_E), .clk(CLK));
 
-loot LUT (.ADDr_WE(AddrWE),
-          .DM_WE(DMWE),
-          .BUF_E(BUF_E),
-          .SR_WE(),
-          .cs()
-          .sclk(),
-          );
-          
-registerDFF SoutDFF #(1) (.q(SoutDFF), .d(Sout), .wrenable(SCLKNegEdge), .clk(CLK));
+registerDFF #(8) DATADFF (.q(datasaved), .d(datacon), .wrenable(dataenable), .clk(CLK));
 
-registerDFF RWDFF #(1) (.q(MOSIBUFF), .d(Addr[7]), .wrenable(BUF_E), .clk(CLK));
+registerDFF #(8) ADDRDFF (.q(addrsaved), .d(addrcon), .wrenable(addrenable), .clk(CLK));
 
 //MOSI BUFF AND GATE
 
@@ -93,9 +83,15 @@ buf (CS, CSCon);
 
 // SCLK BUFF
 
-buf (SCLK, SCLKCon);
+buf (SPIBuffer, SCLKCon);
 
 // Pout DFF
-registerDFF PoutDFF #(8) (.q(PoutAddrDFF), .d(PoutAddr), .wrenable(AddrWE), .clk(CLK));
+registerDFF #(8) SPIBufferer (.q(SPIBuffer), .d(MISO), .wrenable(BuffEn), .clk(CLK));
 
 // MUX
+muxnto1byn #(8) datamux (.out(Pin),
+                         .address(Switch),
+                         .input0(addrsaved),
+                         .input1(datasaved));
+
+buf (SCLK, MISO);
