@@ -60,13 +60,10 @@ shiftregister8 ShiftRegBaby (.parallelOut(Pout),
                              .parallelIn(Pin),
                              .serialIn(MOSICon));
 
-loot LUT (.ADDr_WE(AddrWE),
-          .DM_WE(DMWE),
-          .BUF_E(BUF_E),
-          .SR_WE(),
-          .cs()
-          .sclk(),
-          );
+laffy loot(.cs(CSCon), .clkedge(SCLKPosEdge), .clk(clk),
+					 .nintendo(Switch), .SRM(SRWE),
+					 .DataFE(dataenable), .AddrFE(addrenable), .InFE(BuffEn),
+					 .BUF(MOSIBUFF));
 
 registerDFF #(1) SoutDFF (.q(SoutDFF), .d(Sout), .wrenable(SCLKNegEdge), .clk(CLK));
 
