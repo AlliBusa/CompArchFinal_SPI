@@ -1,5 +1,3 @@
-`include "shiftregister.v"
-`include "dflipflop.v"
 
 `define CSON 1'b0
 `define CSOFF 1'b1
@@ -28,12 +26,12 @@ module loot
 );
 	 reg 			mod_select; // 1 when in data phase, 0 when in addr phase
 	 wire [8:0] count;
-	 wire 			fCount;
+	 wire [1:0] fCount;
 	 reg 				csel = `CSOFF;
 	 reg 				rwsig;
 
    shiftregister8 #(9) dut(.clk(clk),
-    											 .serialClk(clkedge),
+    											 .serialClkposedge(clkedge),
     											 .mode(fCount),
     											 .parallelIn(9'b1),
     											 .serialIn(1'b0),
@@ -88,7 +86,7 @@ module lute
  output reg ADDR_WE,
  output reg DM_WE,
  output 		BUF_E,
- output 		SR_WE,
+ output [1:0] SR_WE,
  input 			cs, // Chip select
  input 			sout, // Serial out of the shift register storing MOSI input
  input 			clkedge, // sclk edge from input conditioner
@@ -98,10 +96,15 @@ module lute
 	 wire [8:0] count;
 	 wire 			fCount;
 	 reg 				csel = `CSOFF;
+   reg [1:0]  mode;
+
+   initial begin
+        mode <= 2'b0;
+   end
 
    shiftregister8 #(9) dut(.clk(clk),
-    											 .serialClk(clkedge),
-    											 .mode(fCount),
+    											 .serialClkposedge(clkedge),
+    											 .mode(mode),
     											 .parallelIn(9'b1),
     											 .serialIn(1'b0),
     											 .parallelOut(count),
@@ -148,4 +151,3 @@ module lute
 			end // if (csel == `CSON)
 	 end // always @ (clkedge)
 endmodule // lute
-
