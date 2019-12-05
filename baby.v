@@ -91,7 +91,7 @@ registerDFF #(8) SPIBufferer (.q(SPIBuffer), .d(MISO), .wrenable(BuffEn), .clk(C
 // MUX
 muxnto1byn #(8) datamux (.out(Pin),
                          .address(Switch),
-                         .input0(addrsaved),
-                         .input1(datasaved));
+                         .input1(addrsaved),
+                         .input0(datasaved));
 
 buf (SCLK, MISO);
