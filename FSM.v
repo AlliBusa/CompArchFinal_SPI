@@ -43,8 +43,8 @@ module loot
 	 // Conveniently, the MSB of the shift reg is setup to be 1 after 8 shifts.
 	 // This means we just set the mode of the shift reg to be controlled by the MSB of the shift reg.
    shiftregister8 #(9) counter(.clk(clk),
-    													 .serialClk(clkedge),
-    													 .mode(fCount),
+    													 .serialClkposedge(clkedge),
+    													 .mode({1'b1,fCount}),
     													 .parallelIn(9'b1),
     													 .serialIn(1'b0),
     													 .parallelOut(count),
@@ -124,7 +124,7 @@ module lute
  output reg ADDR_WE, // Controls when we write to the D flip flop saving the address
  output reg DM_WE, // Controls when we write to memory
  output 		BUF_E, // Controls MISOBUFF (sending data to baby)
- output 		SR_WE, // Controls when we pLoad into shift reg
+ output [1:0]	SR_WE, // Controls when we pLoad into shift reg
  input 			cs, // Chip select
  input 			sout, // Serial out of the shift register storing MOSI input
  input 			clkedge, // sclk edge from input conditioner
@@ -137,8 +137,8 @@ module lute
 
 	 // Same reasoning for this shift reg as the one in loot (FSM for baby)
    shiftregister8 #(9) counter(.clk(clk),
-    													 .serialClk(clkedge),
-    													 .mode(fCount),
+    													 .serialClkposedge(clkedge),
+    													 .mode({1'b1,fCount}),
     													 .parallelIn(9'b1),
     													 .serialIn(1'b0),
     													 .parallelOut(count),
@@ -158,7 +158,7 @@ module lute
 	 // We do that by setting it equal to fCount - which is only true after 8 cycles
 	 // Even if we didn't need to load it, it's fine, since it'll get shifted out anyways
 	 // Loading doesn't affect our memory, so it works out all fine
-	 assign SR_WE = fCount;
+	 assign SR_WE = {1'b1,fCount};
 
 	 // Initialize when chip select goes low
 	 always @(negedge cs) begin
@@ -202,4 +202,3 @@ module lute
 			end // if (csel == `CSON)
 	 end // always @ (clkedge)
 endmodule // lute
-
