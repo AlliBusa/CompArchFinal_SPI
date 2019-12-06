@@ -19,9 +19,7 @@ module testConditioner();
     			 .noisysignal(pin),
 			 .conditioned(conditioned),
 			 .positiveedge(rising),
-			 .negativeedge(falling),
-       .synchronizer0UT(sync0),
-       .synchronizer1OUT(sync1)
+			 .negativeedge(falling)
        );
 
 
