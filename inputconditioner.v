@@ -24,7 +24,7 @@ output reg  negativeedge   // 1 clk pulse at falling edge of conditioned
 
     initial begin
       conditioned <= 0;
-      positiveedge
+      positiveedge <= 0;
     end
 
     always @(posedge clk ) begin
