@@ -25,7 +25,7 @@ module smolboi_test ();
   assign CS = 0;
   SmolBoi smolboi(.MOSI(MOSI),.SCLK(SCLK),.CLK(CLK),.CS(CS),.MISO(MISO));
 
-@(posedge CLK)
+always @(posedge CLK) begin
   MOSI = 101010101; #100
   MISO = 231321414; #100
 end
