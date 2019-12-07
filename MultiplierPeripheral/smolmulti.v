@@ -1,9 +1,8 @@
-`include "MultiplierPeripheral/datamemory.v"
-`include "MultiplierPeripheral/dflipflop.v"
-`include "MultiplierPeripheral/inputconditioner.v"
-`include "MultiplierPeripheral/shiftregister.v"
-`include "MultiplierPeripheral/fsm.v"
-`include "MultiplierPeripheral/Multiplier/multiplier.v"
+`include "dflipflop.v"
+`include "inputconditioner.v"
+`include "shiftregister.v"
+`include "fsm.v"
+`include "/Multiplier/multiplier.v"
 
 module SmolBoi (
   input MOSI,

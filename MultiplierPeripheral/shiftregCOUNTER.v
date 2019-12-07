@@ -1,6 +1,6 @@
 // Shift Register from Lab2 that was used in Shashank, Jordan and Alli's Lab 2
 
-`include "shiftregmodes.v"
+`include "../shiftregmodes.v"
 
 module countah
 #(parameter width = 8)
