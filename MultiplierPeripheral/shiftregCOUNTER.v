@@ -2,7 +2,7 @@
 
 `include "shiftregmodes.v"
 
-module shiftregister
+module countah
 #(parameter width = 8)
 (
   output [width-1:0]  parallelOut,
