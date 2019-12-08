@@ -1,4 +1,4 @@
-`include ".../shiftregmodes.v"
+`include "Multiplier/shiftregmodes.v"
 `include "shiftregCOUNTER.v"
 
 `define WAIT = 3'd0;
@@ -39,7 +39,7 @@ countah #(9) counter(.parallelOut(count),
                            .serialIn(0));
 
 always @(posedge sclk) begin
-  if (cs == 1 && state == `WAIT) begin
+  if (cs === 1 && state == `WAIT) begin
     misobuffCNTL <= 0;
     state <= `PLOAD;
     mode <= `HOLD;
