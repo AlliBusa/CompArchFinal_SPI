@@ -1,11 +1,13 @@
 `include "Multiplier/shiftregmodes.v"
 `include "shiftregCOUNTER.v"
+`include "shiftregister.v"
+`include "dflipflop.v"
 
-`define WAIT = 3'd0;
-`define LOAD = 3'd1;
-`define MULT = 3'd2;
-`define MULTRES = 3'd3;
-`define MISORESULT = 3'd4;
+`define WAIT 3'd0
+`define LOAD 3'd1
+`define MULT 3'd2
+`define MULTRES 3'd3
+`define MISORESULT 3'd4
 
 module FSMult
 (
@@ -17,8 +19,9 @@ module FSMult
   output  reg start,
   output  reg misobuffCNTL
 );
-wire [2:0] state;
-wire [7:0] count;
+reg [2:0] state;
+wire [2:0] actualstate;
+wire [8:0] count;
 reg wrenableSTATE;
 reg [1:0] countmode ;
 
@@ -27,9 +30,10 @@ reg [1:0] countmode ;
 initial begin
   wrenableSTATE <= 1;
   countmode <=  `PLOAD;
+  state <= `WAIT;
 end
 // D Flip FLop to hold the state
-shiftregister #(5) FSMstates(.q(state), .d(state), .wrenable(wrenableSTATE), .clk(sclk));
+registerDFFPARA #(3) FSMstates(.q(actualstate), .d(state), .wrenable(wrenableSTATE), .clk(sclk));
 
 // Counter
 countah #(9) counter(.parallelOut(count),
@@ -39,7 +43,7 @@ countah #(9) counter(.parallelOut(count),
                            .serialIn(0));
 
 always @(posedge sclk) begin
-  if (cs === 1 && state == `WAIT) begin
+  if (cs === 1 && actualstate == `WAIT) begin
     misobuffCNTL <= 0;
     state <= `PLOAD;
     mode <= `HOLD;
@@ -47,7 +51,7 @@ always @(posedge sclk) begin
     countmode <= `PLOAD;
 
   end
-  if (counter == 4'd8 && state == `LOAD) begin
+  if (count[8] === 1  && actualstate == `LOAD) begin
     misobuffCNTL <= 0;
     start <= 1;
     state <= `MULT;
@@ -55,7 +59,7 @@ always @(posedge sclk) begin
     countmode <= `LEFT;
   end
 
-  if (done == 1 && state == `MULT) begin
+  if (done == 1 && actualstate == `MULT) begin
     misobuffCNTL <= 0;
     start = 0;
     state <= `MULTRES;
@@ -63,17 +67,19 @@ always @(posedge sclk) begin
     countmode <= `PLOAD;
   end
 
-  if (state == `MULTRES) begin
+  if (actualstate == `MULTRES) begin
     misobuffCNTL <= 0;
     start <= 0;
     mode <= `PLOAD;
-    countmode <= `LEFT;`
+    countmode <= `LEFT;
+    state <= `MISORESULT;
 
   end
 
-  if (counter == 4'd8 && state = MISORESULT) begin
+  if (count[8] === 1 && actualstate == `MISORESULT) begin
       misobuffCNTL <= 1;
       mode <= `LEFT;
+      state <= `WAIT;
   end
 end
 endmodule
