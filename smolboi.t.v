@@ -62,7 +62,7 @@ module smolboi_test ();
     passed = 1;
     $finish;
   end
-  #200secsecsecsec
+  #200
 
   if(MISO != 1'b0) begin
     $display("Failed, little boy.");

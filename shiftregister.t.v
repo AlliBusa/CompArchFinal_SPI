@@ -26,6 +26,7 @@ module testshiftregister();
     		           .serialOut(serialDataOut));
  // Generate (infinite) clock
    initial clk=0;
+   initial mode=00;
    always #10 clk = !clk;
 
 
@@ -103,6 +104,9 @@ module testshiftregister();
     mode=`LEFT; parallelDataIn = 7'b0000100; serialDataIn = 0;
     $display("parallel output : b%b",parallelDataOut);
     serialClkposedge = 0;
+    @(posedge clk);
+      serialClkposedge = 1;
+      $display("parallel output : b%b",parallelDataOut);
 
     // tick 1, checking that Sout doesnt change but Pout does when Sin = 0
     @(negedge clk);
