@@ -31,7 +31,7 @@ module loot
 	 wire 			fCount; // MSB of the shift reg
 	 reg 				csel = `CSOFF; // `CSOFF means chip select is high, `CSON means chip select is low
 	 reg 				rwsig; // tells us if we're reading or writing
-   reg        [1:0] modulator;
+   wire        [1:0] modulator;
 	 // Chose to use a counter because:
 	 // we can just see which bit of the shift register is high to tel us what stage we're in
 	 // Chose to use a 9 bit shift-reg instead of an 8-bit shift reg so that we can preload the 1
@@ -42,7 +42,7 @@ module loot
 	 // The shiftreg needs to reload after eight shifts.
 	 // Conveniently, the MSB of the shift reg is setup to be 1 after 8 shifts.
 	 // This means we just set the mode of the shift reg to be controlled by the MSB of the shift reg.
-   assign modulator = {1'b1,fcount};
+   assign modulator = {1'b1,fCount};
 
    shiftregister8 #(9) counter(.clk(clk),
     													 .serialClkposedge(clkedge),

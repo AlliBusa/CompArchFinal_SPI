@@ -18,7 +18,7 @@ module SmolBoi (
 	 wire  AddrWE, DMWE, MISOBuff;
    wire [1:0] SRWE;
    wire [7:0] Pin, Pout;
-   wire [6:0] PoutAddr;
+   wire [7:0] PoutAddr;
 
    // TODO instantiate LUT
 	 lute luffy(.clk(CLK),
@@ -59,7 +59,7 @@ module SmolBoi (
 
    datamemory MemSmolBoi (.clk(CLK),
 													.dataOut(Pin),
-													.address(PoutAddr),
+													.address(PoutAddr[6:0]),
 													.writeEnable(DMWE),
 													.dataIn(Pout));
 
@@ -68,13 +68,10 @@ module SmolBoi (
 		// 													 .clk(CLK),
 		// 													 .q(PoutAddr));
 
-   registerDFF PoutRegSmolBoi (.parallelOut(PoutAddr), //TODO need 8 bit flip flop
-                                  .serialOut(),
-                                  .clk(CLK),
-                                  .serialClkposedge(SCLKPosEdge),
-                                  .mode(AddrWE),
-                                  .parallelIn(Pout),
-                                  .serialIn());
+   register8 PoutRegSmolBoi (.q(PoutAddr),
+                             .clk(CLK),
+                             .wrenable(AddrWE),
+                             .d(Pout));
 
    registerDFF SoutRegSmolBoi (.d(Sout),
 															 .wrenable(CLK),
