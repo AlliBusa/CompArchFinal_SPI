@@ -1,6 +1,6 @@
 `include "Multiplier/shiftregmodes.v"
 `include "shiftregCOUNTER.v"
-`include "shiftregister.v"
+// `include "Multiplier/shiftregister.v"
 `include "dflipflop.v"
 
 `define WAIT 3'd0
@@ -31,6 +31,8 @@ initial begin
   wrenableSTATE <= 1;
   countmode <=  `PLOAD;
   state <= `WAIT;
+  mode <= `HOLD;
+
 end
 // D Flip FLop to hold the state
 registerDFFPARA #(3) FSMstates(.q(actualstate), .d(state), .wrenable(wrenableSTATE), .clk(sclk));
@@ -39,24 +41,23 @@ registerDFFPARA #(3) FSMstates(.q(actualstate), .d(state), .wrenable(wrenableSTA
 countah #(9) counter(.parallelOut(count),
                            .clk(sclk),
                            .mode(countmode),
-                           .parallelIn(),
+                           .parallelIn(9'b1),
                            .serialIn(0));
 
 always @(posedge sclk) begin
   if (cs === 1 && actualstate == `WAIT) begin
     misobuffCNTL <= 0;
-    state <= `PLOAD;
-    mode <= `HOLD;
+    state <= `LOAD;
+    countmode <= `LEFT;
+    mode <= `LEFT;
 
-    countmode <= `PLOAD;
 
   end
   if (count[8] === 1  && actualstate == `LOAD) begin
     misobuffCNTL <= 0;
     start <= 1;
     state <= `MULT;
-    mode <= `LEFT;
-    countmode <= `LEFT;
+    countmode <= `HOLD;
   end
 
   if (done == 1 && actualstate == `MULT) begin
