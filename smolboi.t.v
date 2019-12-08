@@ -5,48 +5,123 @@
 
 module smolboi_test ();
 
-
-  initial begin
-        $dumpfile("smolboi.vcd");
-        $dumpvars();
-  end
   reg MOSI;
   reg SCLK;
   reg CLK;
   reg CS;
-  reg MISO;
-  reg passed =1;
+  wire MISO;
+  reg passed =0;
 
   initial CLK=0;
   always #10 CLK = !CLK;
 
   initial SCLK =0;
-  always #200 SCLK=!SCLK;
-  assign CS = 0;
+  always #100 SCLK=!SCLK;
+
   SmolBoi smolboi(.MOSI(MOSI),.SCLK(SCLK),.CLK(CLK),.CS(CS),.MISO(MISO));
 
-always @(posedge CLK) begin
-  MOSI = 101010101; #100
-  MISO = 231321414; #100
-end
+  initial begin
+        $dumpfile("smolboi.vcd");
+        $dumpvars();
 
-  `ASSERT_EQ(MISO[0:12], 21321313, "Failed");
+  CS = 0;
 
-  if(MISO[12:0]!= MOSI[5:0]) passed = 0;
+  // Input addr: 0(RW) + 1010101
+  MOSI = 1'b0; #200
+  MOSI = 1'b1; #200
+  MOSI = 1'b0; #200
+  MOSI = 1'b1; #200
+  MOSI = 1'b0; #200
+  MOSI = 1'b1; #200
+  MOSI = 1'b0; #200
+  MOSI = 1'b1; #200
 
-  assign MOSI = 101010101;
-  #100;
-  assign MOSI = 231321414;
-  #100;
-  `ASSERT_EQ(MISO[0:12], 2132141231, "Failed")
-  if(MISO[0:12]!= MOSI[0:5]) passed = 0;
+  // Input number: 00110011
+  MOSI = 1'b0; #200
+  MOSI = 1'b0; #200
+  MOSI = 1'b1; #200
+  MOSI = 1'b1; #200
+  MOSI = 1'b0; #200
+  MOSI = 1'b0; #200
+  MOSI = 1'b1; #200
+  MOSI = 1'b1; #200
 
-  assign MOSI = 101010101;
-  #100;
-  assign MOSI = 231321414;
-  #100;
-  `ASSERT_EQ(MISO[0:12], 564423424324, "Failed")
-  if(MISO[0:12]!= MOSI[0:5]) passed = 0;
+  // Input addr: 0(RW) + 1010101
+  MOSI = 1'b1; #200
+  MOSI = 1'b1; #200
+  MOSI = 1'b0; #200
+  MOSI = 1'b1; #200
+  MOSI = 1'b0; #200
+  MOSI = 1'b1; #200
+  MOSI = 1'b0; #200
+  MOSI = 1'b1; #200
 
-  if (passed) $display("All Tests Passed");
+  // `ASSERT_EQ(MISO, 1'b0, "Failed"); #200
+  if(MISO != 1'b0) begin
+    $display("Failed, little boy.");
+    passed = 1;
+    $finish;
+  end
+  #200secsecsecsec
+
+  if(MISO != 1'b0) begin
+    $display("Failed, little boy.");
+    passed = 1;
+    $finish;
+  end
+  #200
+
+  if(MISO != 1'b1) begin
+    $display("Failed, little boy.");
+    passed = 1;
+    $finish;
+  end
+  #200
+
+  if(MISO != 1'b1) begin
+    $display("Failed, little boy.");
+    passed = 1;
+    $finish;
+  end
+  #200
+
+  if(MISO != 1'b0) begin
+    $display("Failed, little boy.");
+    passed = 1;
+    $finish;
+  end
+  #200
+
+  if(MISO != 1'b0) begin
+    $display("Failed, little boy.");
+    passed = 1;
+    $finish;
+  end
+  #200
+
+  if(MISO != 1'b1) begin
+    $display("Failed, little boy.");
+    passed = 1;
+    $finish;
+  end
+  #200
+
+  if(MISO != 1'b0) begin
+    $display("Failed, little boy.");
+    passed = 1;
+    $finish;
+  end
+  #200
+  // `ASSERT_EQ(MISO, 1'b0, "Failed"); #200
+  // if(MISO == 1'b0)
+  // `ASSERT_EQ(MISO, 1'b1, "Failed"); #200
+  // `ASSERT_EQ(MISO, 1'b1, "Failed"); #200
+  // `ASSERT_EQ(MISO, 1'b0, "Failed"); #200
+  // `ASSERT_EQ(MISO, 1'b0, "Failed"); #200
+  // `ASSERT_EQ(MISO, 1'b1, "Failed"); #200
+  // `ASSERT_EQ(MISO, 1'b1, "Failed"); #200
+
+  if (passed) $display("Failed.");
   #20 $finish;
+  end
+  endmodule
