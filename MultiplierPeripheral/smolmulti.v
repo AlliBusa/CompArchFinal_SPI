@@ -1,8 +1,7 @@
-`include "dflipflop.v"
 `include "inputconditioner.v"
-`include "shiftregister.v"
 `include "fsm.v"
 `include "Multiplier/multiplier.v"
+`include "shiftregister.v"
 
 module SmolBoi (
   input MOSI,
@@ -19,7 +18,7 @@ module SmolBoi (
    wire [1:0] mode;
 
    // TODO instantiate LUT
-	 FSMult fsm(.sclk(SCLK),.clk(CLK),.cs(CS),.clkedge(SCLKPosEdge),.mode(mode),
+	 FSMult fsm(.sclk(SCLK),.clk(CLK),.cs(CS),.mode(mode),
 							.start(start),.misobuffCNTL(MISOBuff),.done(done));
 
    inputconditioner MOSIinputConditioner (.clk(CLK),
@@ -41,7 +40,7 @@ module SmolBoi (
                                         .negativeedge(CSNegEdge));
 
 
-   shiftregister8 ShiftRegSmolBoi (.parallelOut(Pout),
+   shiftregistermain ShiftRegSmolBoi (.parallelOut(Pout),
                                    .clk(CLK),
                                    .mode(mode),
                                    .parallelIn(Pin),
@@ -54,12 +53,7 @@ module SmolBoi (
 													.A(Pout[3:0]),
                           .B(Pout[7:4]));
 
-   registerDFF PoutRegSmolBoi (.d(Pout),
-															 .wrenable(AddrWE),
-															 .clk(CLK),
-															 .q(PoutAddr));
-
-   registerDFF SoutRegSmolBoi (.d(Sout),
+   registerDFFPARA #(1) SoutRegSmolBoi (.d(Sout),
 															 .wrenable(CLK),
 															 .clk(CLK),
 															 .q(SoutDFF));
