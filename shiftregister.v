@@ -16,7 +16,7 @@ module shiftregister8
 // #(parameter width = 8)
 (
   output [7:0]  parallelOut,//output/result
-  output reg          serialOut,
+  output          serialOut,
   input               clk,
   input               serialClkposedge,
   input [1:0]         mode,//will it pload?shift right? etc.
@@ -31,7 +31,7 @@ reg [7:0] memory;
     end
 
     assign parallelOut = memory;
-    // assign serialOut = memory[7];
+    assign serialOut = memory[7];
 
     always @(posedge clk) begin
           if (serialClkposedge == 1) begin
@@ -49,7 +49,7 @@ reg [7:0] memory;
                       // assign serialOut = memory[width-1];
                       end
           endcase
-          serialOut = memory[7];
+          // serialOut = memory[7];
         end
     end
 endmodule

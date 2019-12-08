@@ -12,7 +12,7 @@
 
 `include "Multiplier/shiftregmodes.v"//include modes module so that we an reference these modes as words instead of bits in the code
 
-module shiftregister8
+module shiftregistermain
 #(parameter width = 8)
 (
   output [width-1:0]  parallelOut,//output/result

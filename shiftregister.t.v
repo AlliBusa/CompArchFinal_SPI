@@ -102,8 +102,8 @@ module testshiftregister();
     $display("parallel output : b%b",parallelDataOut);
 
     mode=`LEFT; parallelDataIn = 7'b0000100; serialDataIn = 0;
-    $display("parallel output : b%b",parallelDataOut);
     serialClkposedge = 0;
+    $display("parallel output : b%b",parallelDataOut);
     @(posedge clk);
       serialClkposedge = 1;
       $display("parallel output : b%b",parallelDataOut);
@@ -112,39 +112,39 @@ module testshiftregister();
     @(negedge clk);
     serialDataIn = 0;
     @(posedge clk);
-      serialClkposedge = 1;
+      serialClkposedge = 1; #5
 
-    `ASSERT_EQ(serialDataOut, 1'b0, "intermediate LEFT failed")
-    `ASSERT_EQ(parallelDataOut, 8'd8, "intermediate LEFT failed")
+    `ASSERT_EQ(serialDataOut, 1'b0, "intermediate LEFT failed: sout: 1")
+    `ASSERT_EQ(parallelDataOut, 8'd16, "intermediate LEFT failed: pout 8'd8")
     // tick 2, checking that Pout changes when Sin= 1 and Sout doesn't change
     @(negedge clk);
     serialDataIn = 1; serialClkposedge = 0;
     @(posedge clk);
-      serialClkposedge = 1;
-    `ASSERT_EQ(serialDataOut, 1'b0, "intermediate LEFT failed")
-    `ASSERT_EQ(parallelDataOut, 8'b0010001, "intermediate LEFT failed")
+      serialClkposedge = 1; #5
+    `ASSERT_EQ(serialDataOut, 1'b0, "intermediate LEFT failed: sout: 2")
+    `ASSERT_EQ(parallelDataOut, 8'b00100001, "intermediate LEFT failed: pout 8'b00010001")
     // tick 3
     @(negedge clk);
     serialDataIn = 1; serialClkposedge = 0;
     @(posedge clk);
-    serialClkposedge = 1;
-    `ASSERT_EQ(serialDataOut, 1'b0, "intermediate LEFT failed")
-    `ASSERT_EQ(parallelDataOut, 8'b00100011, "intermediate LEFT failed")
+    serialClkposedge = 1; #5
+    `ASSERT_EQ(serialDataOut, 1'b0, "intermediate LEFT failed: sout: 3")
+    `ASSERT_EQ(parallelDataOut, 8'b01000011, "intermediate LEFT failed: pout 8'b00100011")
     // tick 4
     @(negedge clk); serialClkposedge = 0;
     serialDataIn = 1;
     @(posedge clk);
-      serialClkposedge = 1;
-    `ASSERT_EQ(serialDataOut, 1'b0, "intermediate LEFT failed")
-    `ASSERT_EQ(parallelDataOut, 8'b01000111, "intermediate LEFT failed")
+      serialClkposedge = 1; #5
+    `ASSERT_EQ(serialDataOut, 1'b1, "intermediate LEFT failed: sout: 4")
+    `ASSERT_EQ(parallelDataOut, 8'b10000111, "intermediate LEFT failed: pout 8'b01000111")
     $display("zeroth bit P[0] : b%b",parallelDataOut[0]);
     // setting the shiftregister
     @(negedge clk);
     serialDataIn = 1; serialClkposedge = 0;
     @(posedge clk);
-      serialClkposedge = 1;
-    `ASSERT_EQ(serialDataOut, 1'b1, " LEFT failed")
-    `ASSERT_EQ(parallelDataOut, 8'b10001111, "LEFT failed")
+      serialClkposedge = 1; #5
+    `ASSERT_EQ(serialDataOut, 1'b0, " LEFT failed: sout: fin")
+    `ASSERT_EQ(parallelDataOut, 8'b00001111, "LEFT failed: pout 8'b10001111")
 
     // Test case 4: right
     @(negedge clk); serialClkposedge = 0;
@@ -159,39 +159,39 @@ module testshiftregister();
     @(negedge clk);
     serialDataIn = 1; serialClkposedge = 0;
     @(posedge clk);
-      serialClkposedge = 1;
-    `ASSERT_EQ(serialDataOut, 1'b1, "intermediate RIGHT failed")
+      serialClkposedge = 1; #5
+    `ASSERT_EQ(serialDataOut, 1'b1, "intermediate RIGHT failed: 1")
     @(negedge clk);
     serialDataIn = 0; serialClkposedge = 0;
     @(posedge clk);
-      serialClkposedge = 1;
-    `ASSERT_EQ(serialDataOut, 1'b0, "intermediate RIGHT failed")
+      serialClkposedge = 1; #5
+    `ASSERT_EQ(serialDataOut, 1'b0, "intermediate RIGHT failed: 2")
     @(negedge clk);
     serialDataIn = 1; serialClkposedge = 0;
     @(posedge clk);
-      serialClkposedge = 1;
-    `ASSERT_EQ(serialDataOut, 1'b1, "intermediate RIGHT failed")
+      serialClkposedge = 1; #5
+    `ASSERT_EQ(serialDataOut, 1'b1, "intermediate RIGHT failed: 3")
     @(negedge clk);
     serialDataIn = 0; serialClkposedge = 0;
     @(posedge clk);
-      serialClkposedge = 1;
-    `ASSERT_EQ(serialDataOut, 1'b0, "intermediate RIGHT failed")
+      serialClkposedge = 1; #5
+    `ASSERT_EQ(serialDataOut, 1'b0, "intermediate RIGHT failed: 4")
     @(negedge clk);
     serialDataIn = 1; serialClkposedge = 0;
     @(posedge clk);
-      serialClkposedge = 1;
-    `ASSERT_EQ(serialDataOut, 1'b1, "intermediate RIGHT failed")
+      serialClkposedge = 1; #5
+    `ASSERT_EQ(serialDataOut, 1'b1, "intermediate RIGHT failed: 5")
     @(negedge clk);
     serialDataIn = 0; serialClkposedge = 0;
     @(posedge clk);
-      serialClkposedge = 1;
-    `ASSERT_EQ(serialDataOut, 1'b0, "intermediate RIGHT failed")
+      serialClkposedge = 1; #5
+    `ASSERT_EQ(serialDataOut, 1'b0, "intermediate RIGHT failed: 6")
     @(negedge clk);
     serialDataIn = 0; serialClkposedge = 0;
     @(posedge clk);
-      serialClkposedge = 1;
-    `ASSERT_EQ(serialDataOut, 1'b0, "intermediate RIGHT failed")
-    `ASSERT_EQ(parallelDataOut, 7'b1010100, "intermediate FINAL failed")
+      serialClkposedge = 1; #5
+    `ASSERT_EQ(serialDataOut, 1'b0, "intermediate RIGHT failed: sout")
+    `ASSERT_EQ(parallelDataOut, 8'b00101011, "intermediate FINAL failed: pout 8'b00101011")
 
 
 
