@@ -17,10 +17,11 @@ module FSMult
   input clk,
   output reg  [1:0] mode,
   output  reg start,
-  output  reg misobuffCNTL
+  output  reg misobuffCNTL,
+  output  [2:0] actualstate
 );
 reg [2:0] state;
-wire [2:0] actualstate;
+//wire [2:0] actualstate;
 wire [8:0] count;
 reg wrenableSTATE;
 reg [1:0] countmode ;
@@ -58,6 +59,7 @@ always @(posedge sclk) begin
     start <= 1;
     state <= `MULT;
     countmode <= `HOLD;
+    mode <= `HOLD;
   end
 
   if (done == 1 && actualstate == `MULT) begin
