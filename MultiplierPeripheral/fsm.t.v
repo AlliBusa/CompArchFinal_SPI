@@ -9,16 +9,18 @@ module testFSM();
   reg sclk;
   reg clk;
 
-  reg [1:0] mode;
-  reg start;
-  reg misobuffCNTL;
+  wire [1:0] MODE;
+  wire START;
+  wire misobuffCNTL;
+  wire [2:0] actualstate;
 
   FSMult dut (.cs(cs),
               .done(done),
               .sclk(sclk),
               .clk(clk),
-              .mode(mode),
+              .mode(MODE),
               .start(start),
+              .actualstate(actualstate),
               .misobuffCNTL(misobuffCNTL));
 
   // Generate clock
