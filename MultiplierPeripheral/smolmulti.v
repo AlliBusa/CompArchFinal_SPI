@@ -1,8 +1,7 @@
-`include "dflipflop.v"
 `include "inputconditioner.v"
-`include "shiftregister.v"
 `include "fsm.v"
-`include "/Multiplier/multiplier.v"
+`include "Multiplier/multiplier.v"
+`include "shiftregister.v"
 
 module SmolBoi (
   input MOSI,
@@ -13,13 +12,14 @@ module SmolBoi (
 );
 
    wire  MOSICon, MOSIPosEdge, MOSINegEdge, SCLKCon, SCLKPosEdge, SCLKNegEdge, CSCon, CSPosEdge, CSNegEdge, Sout, SoutDFF, SoutBuff;
-	 wire  start,AEn,BEn, done;
+	 wire  start,AEn,BEn, done, MISOBuff;
    wire [7:0] Pin, Pout, PoutAddr;
    wire [3:0] A, B;
+   wire [1:0] mode;
 
    // TODO instantiate LUT
-	 luffy lute(.clk(CLK),.cs(CS),.clkedge(SCLKNegEdge),.sout(Sout),
-							.ADDR_WE(AddrWe),.DM_WE(DMWE),.BUF_E(MISOBuff),.SR_WE(SRWE));
+	 FSMult fsm(.sclk(SCLK),.clk(CLK),.cs(CS),.mode(mode),
+							.start(start),.misobuffCNTL(MISOBuff),.done(done));
 
    inputconditioner MOSIinputConditioner (.clk(CLK),
 																					.noisysignal(MOSI),
@@ -40,9 +40,9 @@ module SmolBoi (
                                         .negativeedge(CSNegEdge));
 
 
-   shiftregister8 ShiftRegSmolBoi (.parallelOut(Pout),
+   shiftregistermain ShiftRegSmolBoi (.parallelOut(Pout),
                                    .clk(CLK),
-                                   .mode(SRWE),
+                                   .mode(mode),
                                    .parallelIn(Pin),
                                    .serialIn(MOSICon),
 																	 .serialOut(Sout));
@@ -50,28 +50,14 @@ module SmolBoi (
    multiplier MultiSmolBoi (.clk(CLK),
 													.res(Pin),
 													.done(done),
-													.A(A),
-                          .B(B));
+													.A(Pout[3:0]),
+                          .B(Pout[7:4]));
 
-   registerDFF PoutRegSmolBoi (.d(Pout),
-															 .wrenable(AddrWE),
-															 .clk(CLK),
-															 .q(PoutAddr));
-
-   registerDFF SoutRegSmolBoi (.d(Sout),
+   registerDFFPARA #(1) SoutRegSmolBoi (.d(Sout),
 															 .wrenable(CLK),
 															 .clk(CLK),
 															 .q(SoutDFF));
 
-   registerDFF #(4) AReg (.d(Pout),
-													.wrenable(AEn),
-													.clk(CLK),
-													.q(A));
-
-   registerDFF #(4) BReg (.d(Pout),
-													.wrenable(BEn),
-													.clk(CLK),
-													.q(B));
 
    and MISOBuffAnd (SoutBuff, SoutDFF, MISOBuff);
 
