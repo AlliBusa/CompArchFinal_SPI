@@ -60,13 +60,14 @@ always @(posedge sclk) begin
     state <= `MULT;
     countmode <= `HOLD;
     mode <= `HOLD;
+    start <= 0;
   end
 
   if (done == 1 && actualstate == `MULT) begin
     misobuffCNTL <= 0;
-    start = 0;
+    start <= 0;
     state <= `MULTRES;
-    mode <= `HOLD;
+    mode <= `PLOAD;
     countmode <= `PLOAD;
   end
 

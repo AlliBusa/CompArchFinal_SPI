@@ -18,7 +18,7 @@ module SmolBoi (
    wire [1:0] mode;
 
    // TODO instantiate LUT
-	 FSMult fsm(.sclk(SCLK),.clk(CLK),.cs(CS),.mode(mode),
+	 FSMult fsm(.sclk(SCLKPosEdge),.clk(CLK),.cs(CS),.mode(mode),
 							.start(start),.misobuffCNTL(MISOBuff),.done(done));
 
    inputconditioner MOSIinputConditioner (.clk(CLK),
@@ -44,12 +44,14 @@ module SmolBoi (
                                    .clk(CLK),
                                    .mode(mode),
                                    .parallelIn(Pin),
+                                   .serialClkposedge(SCLKPosEdge),
                                    .serialIn(MOSICon),
 																	 .serialOut(Sout));
 
    multiplier MultiSmolBoi (.clk(CLK),
 													.res(Pin),
 													.done(done),
+                          .start(start),
 													.A(Pout[3:0]),
                           .B(Pout[7:4]));
 
