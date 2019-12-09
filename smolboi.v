@@ -78,6 +78,6 @@ module SmolBoi (
 															 .clk(CLK),
 															 .q(SoutDFF));
 
-   and MISOBuffAnd (SoutBuff, SoutDFF, MISOBuff);
+   and MISOBuffAnd (MISO, SoutDFF, MISOBuff);
 
 endmodule
