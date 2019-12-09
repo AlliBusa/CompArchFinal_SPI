@@ -48,9 +48,9 @@ $dumpfile("fsm_lute.vcd");
 $dumpvars();
 
 cs = 1; #200
-sout = 1; #200
+sout = 0; #200
 cs = 0; #200
-#2000
+	#20000
 
 $finish;
 
