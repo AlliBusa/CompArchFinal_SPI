@@ -1,9 +1,9 @@
 // Top level module for SPI communication Smol Boi
 
 `include "datamemory.v"
-// `include "dflipflop.v"
+`include "dflipflop.v"
 `include "inputconditioner.v"
-// `include "shiftregister.v"
+`include "shiftregister.v"
 `include "FSM.v"
 
 module SmolBoi (
@@ -21,14 +21,14 @@ module SmolBoi (
    wire [7:0] PoutAddr;
 
    // TODO instantiate LUT
-	 lute luffy(.clk(CLK),
-              .cs(CS),
-              .clkedge(SCLKNegEdge),
-              .sout(Sout),
-							.ADDR_WE(AddrWE),
-              .DM_WE(DMWE),
-              .BUF_E(MISOBuff),
-              .SR_WE(SRWE));
+	 flute luffy(.clk(CLK),
+               .cs(CS),
+               .sclk(SCLKCon),
+               .sout(Sout),
+							 .addressWE(AddrWE),
+               .memWE(DMWE),
+               .misofuff(MISOBuff),
+               .mode(SRWE));
 
    inputconditioner MOSIinputConditioner (.clk(CLK),
 																					.noisysignal(MOSI),

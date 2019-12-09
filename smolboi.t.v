@@ -34,7 +34,7 @@ module smolboi_test ();
   MOSI = 1'b0; #200
   MOSI = 1'b1; #200
   MOSI = 1'b0; #200
-  MOSI = 1'b1; #200
+  MOSI = 1'b1; #400
 
   // Input number: 00110011
   MOSI = 1'b0; #200
@@ -44,7 +44,7 @@ module smolboi_test ();
   MOSI = 1'b0; #200
   MOSI = 1'b0; #200
   MOSI = 1'b1; #200
-  MOSI = 1'b1; #200
+  MOSI = 1'b1; #400
 
   // Input addr: 1(RW) + 1010101
   MOSI = 1'b1; #200
@@ -54,11 +54,12 @@ module smolboi_test ();
   MOSI = 1'b0; #200
   MOSI = 1'b1; #200
   MOSI = 1'b0; #200
-  MOSI = 1'b1; #200
+  MOSI = 1'b1; #600
 
   // `ASSERT_EQ(MISO, 1'b0, "Failed"); #200
   if(MISO !== 1'b0) begin
-    $display("Failed, little boy.");
+    $display("Failed, little boi.");
+    // $display("MISO:");
     passed = 1;
     // $finish;
   end
@@ -106,12 +107,12 @@ module smolboi_test ();
   end
   #200
 
-  if(MISO !== 1'b0) begin
+  if(MISO !== 1'b1) begin
     $display("Failed, little boy.");
     passed = 1;
     // $finish;
   end
-  #200
+  #800
   // `ASSERT_EQ(MISO, 1'b0, "Failed"); #200
   // if(MISO == 1'b0)
   // `ASSERT_EQ(MISO, 1'b1, "Failed"); #200

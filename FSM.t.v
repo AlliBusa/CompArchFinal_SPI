@@ -15,20 +15,20 @@ module testBenchLute();
   wire conditioned;
   wire negativeedge;
 
-  lute dut(.clk(clk),
-            .clkedge(clkedge),
-            .sout(sout),
-            .cs(cs),
-            .ADDR_WE(ADDR_WE),
-            .DM_WE(DM_WE),
-            .BUF_E(BUF_WE),
-            .SR_WE(SR_WE));
-
-  inputconditioner fixItUp (.clk(clk),
-                            .noisysignal(sclk),
-                            .conditioned(conditioned),
-                            .positiveedge(clkedge),
-                            .negativeedge(negativeedge));
+  flute dut(.clk(clk),
+           .sout(sout),
+           .sclk(sclk),
+           .cs(cs),
+           .addressWE(ADDR_WE),
+           .memWE(DM_WE),
+           .misofuff(BUF_WE),
+           .mode(SR_WE));
+  //
+  // inputconditioner fixItUp (.clk(clk),
+  //                           .noisysignal(sclk),
+  //                           .conditioned(conditioned),
+  //                           .positiveedge(clkedge),
+  //                           .negativeedge(negativeedge));
 
 //reg serialclk;
 // Generate clock (50MHz)
@@ -48,9 +48,9 @@ $dumpfile("fsm_lute.vcd");
 $dumpvars();
 
 cs = 1; #200
-sout = 0; #200
+sout = 1; #200
 cs = 0; #200
-	#20000
+#20000
 
 $finish;
 
