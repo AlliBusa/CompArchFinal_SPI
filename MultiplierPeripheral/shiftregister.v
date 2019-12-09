@@ -34,13 +34,13 @@ module shiftregistermain
           if (serialClkposedge == 1) begin
           case (mode)
               `HOLD:  begin memory <= memory[width-1:0];//mantains what it currently has in memory
-                      assign serialOut = memory[width-1];    end
+                      serialOut = memory[width-1];    end
               `LEFT:  begin memory <= {memory[width-2:0], serialIn}; //shift string to the left, fill new spaces with zeroes
-                      assign serialOut = memory[width-2];    end
+                      serialOut = memory[width-2];    end
               `RIGHT:  begin memory <= {serialIn,memory[width-1:1]};  //sift string to right, fill new spaces with zeroes
-                      assign serialOut = memory[serialIn];    end
+                      serialOut = memory[serialIn];    end
               `PLOAD:  begin memory <= parallelIn;  //load in a new value that is coming in as parallelIn into the shiftreg
-                      assign serialOut = memory[width-1];    end
+                      serialOut = memory[width-1];    end
           endcase
         end
     end

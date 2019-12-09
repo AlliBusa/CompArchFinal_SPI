@@ -46,11 +46,11 @@ countah #(9) counter(.parallelOut(count),
                            .clk(sclk),
                            .mode(countmode),
                            .parallelIn(9'b1),
-                           .serialIn(0));
+                           .serialIn(1'b0));
 
 always @(posedge sclk) begin
   if (cs === 1 && actualstate == `WAIT) begin
-    misobuffCNTL <= 1;
+    misobuffCNTL <= 0;
     state <= `LOAD;
     countmode <= `LEFT;
     mode <= `LEFT;
@@ -84,9 +84,9 @@ always @(posedge sclk) begin
   end
 
   if (actualstate == `MULTRES) begin
-    misobuffCNTL <= 0;
+    misobuffCNTL <= 1;
     start <= 0;
-    mode <= `PLOAD;
+    mode <= `LEFT;
     countmode <= `LEFT;
     state <= `MISORESULT;
     doneLONG <= 0;
