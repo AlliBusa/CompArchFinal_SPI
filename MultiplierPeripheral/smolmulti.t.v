@@ -45,13 +45,29 @@ module testSmolMulti();
 
   #100000
   // `ASSERT_EQ(MISO, 1'b0, "Failed"); #200
+  @(posedge SCLK);
   if(MISO !== 0) begin
     $display("Failed, little boy.");
     $display("MISO : %b", MISO);
     passed = 1;
     $finish;
   end
-  #200
+
+  @(posedge SCLK);
+  if(MISO !== 0) begin
+    $display("Failed, little boy.");
+    $display("MISO : %b", MISO);
+    passed = 1;
+    $finish;
+  end
+  @(posedge SCLK);
+  if(MISO !== 0) begin
+    $display("Failed, little boy.");
+    $display("MISO : %b", MISO);
+    passed = 1;
+    $finish;
+  end
+  @(posedge SCLK);
 
   if(MISO !== 0) begin
     $display("Failed, little boy.");
@@ -59,7 +75,7 @@ module testSmolMulti();
     passed = 1;
     $finish;
   end
-  #200
+  @(posedge SCLK);
 
   if(MISO !== 0) begin
     $display("Failed, little boy.");
@@ -67,23 +83,7 @@ module testSmolMulti();
     passed = 1;
     $finish;
   end
-  #200
-
-  if(MISO !== 0) begin
-    $display("Failed, little boy.");
-    $display("MISO : %b", MISO);
-    passed = 1;
-    $finish;
-  end
-  #200
-
-  if(MISO !== 0) begin
-    $display("Failed, little boy.");
-    $display("MISO : %b", MISO);
-    passed = 1;
-    $finish;
-  end
-  #200
+  @(posedge SCLK);
 
   if(MISO !== 1) begin
     $display("Failed, little boy.");
@@ -92,7 +92,7 @@ module testSmolMulti();
     passed = 1;
     $finish;
   end
-  #200
+  @(posedge SCLK);
 
   if(MISO !== 1) begin
     $display("Failed, little boy.");
@@ -100,7 +100,7 @@ module testSmolMulti();
     passed = 1;
     $finish;
   end
-  #200
+  @(posedge SCLK);
 
   if(MISO !== 0) begin
     $display("Failed, little boy.");
