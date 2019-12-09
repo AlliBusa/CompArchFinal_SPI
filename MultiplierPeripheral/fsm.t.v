@@ -9,16 +9,18 @@ module testFSM();
   reg sclk;
   reg clk;
 
-  reg [1:0] mode;
-  reg start;
-  reg misobuffCNTL;
+  wire [1:0] MODE;
+  wire START;
+  wire misobuffCNTL;
+  wire [2:0] actualstate;
 
   FSMult dut (.cs(cs),
               .done(done),
               .sclk(sclk),
               .clk(clk),
-              .mode(mode),
+              .mode(MODE),
               .start(start),
+              .actualstate(actualstate),
               .misobuffCNTL(misobuffCNTL));
 
   // Generate clock
@@ -27,7 +29,7 @@ module testFSM();
 
   // Generate sclk
   initial sclk=0;
-  always #200 sclk = !sclk;
+  always #50 sclk = !sclk;
 
   initial begin
   cs <= 0;
@@ -51,6 +53,7 @@ module testFSM();
   @(negedge sclk);
   // check that the state shifted
   `ASSERT_EQ(actualstate, `MULT, "state shift LOAD>MULTI failed")
+    done <= 1;
 
   // test 3
   @(negedge sclk);
