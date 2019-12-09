@@ -74,7 +74,7 @@ if (cs === 0 && actualstate == `WAIT) begin
     misofuff <= 0;
     actualstate <= `ADDR;
     countmode <= `LEFT;
-    mode <= `LEFT; //shift bits into shift register
+    mode <= `HOLD; //shift bits into shift register
     addressWE = 0;
     memWE = 0;
     count = 3'd0;
@@ -100,7 +100,10 @@ if (actualstate == `ADDR) begin
     memWE = 0;
     rw = sout;
   end
-  else begin count = count + 1; end
+  else begin
+		 mode <= `LEFT;
+		 count = count + 1;
+end
 end
 
 if (actualstate == `LOADADDR) begin
