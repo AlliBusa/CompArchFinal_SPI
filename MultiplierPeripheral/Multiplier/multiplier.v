@@ -32,7 +32,7 @@ module multiplier
   input                 clk,   // Output transitions synchronized to posedge
   input                 start  // High for one cycle when inputs A and B are valid, initiates multiplication sequence
 );
-
+  
 
   localparam  START = 2'b00;
   localparam  ADD = 2'b01;

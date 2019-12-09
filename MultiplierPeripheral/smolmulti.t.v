@@ -43,10 +43,11 @@ module testSmolMulti();
   MOSI = 1'b0; #400
 
 
-  #1000000000
+  #100000
   // `ASSERT_EQ(MISO, 1'b0, "Failed"); #200
   if(MISO !== 0) begin
     $display("Failed, little boy.");
+    $display("MISO : %b", MISO);
     passed = 1;
     $finish;
   end
@@ -54,6 +55,7 @@ module testSmolMulti();
 
   if(MISO !== 0) begin
     $display("Failed, little boy.");
+    $display("MISO : %b", MISO);
     passed = 1;
     $finish;
   end
@@ -61,6 +63,7 @@ module testSmolMulti();
 
   if(MISO !== 0) begin
     $display("Failed, little boy.");
+    $display("MISO : %b", MISO);
     passed = 1;
     $finish;
   end
@@ -68,6 +71,7 @@ module testSmolMulti();
 
   if(MISO !== 0) begin
     $display("Failed, little boy.");
+    $display("MISO : %b", MISO);
     passed = 1;
     $finish;
   end
@@ -75,6 +79,7 @@ module testSmolMulti();
 
   if(MISO !== 0) begin
     $display("Failed, little boy.");
+    $display("MISO : %b", MISO);
     passed = 1;
     $finish;
   end
@@ -82,6 +87,8 @@ module testSmolMulti();
 
   if(MISO !== 1) begin
     $display("Failed, little boy.");
+    $display("MISO : %b", MISO);
+    $display("Expected MISO : 1");
     passed = 1;
     $finish;
   end
@@ -89,6 +96,7 @@ module testSmolMulti();
 
   if(MISO !== 1) begin
     $display("Failed, little boy.");
+    $display("MISO : %b", MISO);
     passed = 1;
     $finish;
   end

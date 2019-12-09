@@ -25,6 +25,7 @@ reg [2:0] state;
 wire [8:0] count;
 reg wrenableSTATE;
 reg [1:0] countmode ;
+reg doneLONG;
 
 // Setting the enable for the state holding D flip flop
 // Since the state can only change when we end it
@@ -33,6 +34,8 @@ initial begin
   countmode <=  `PLOAD;
   state <= `WAIT;
   mode <= `HOLD;
+  start <= 0;
+  doneLONG <= 0;
 
 end
 // D Flip FLop to hold the state
@@ -47,28 +50,37 @@ countah #(9) counter(.parallelOut(count),
 
 always @(posedge sclk) begin
   if (cs === 1 && actualstate == `WAIT) begin
-    misobuffCNTL <= 0;
+    misobuffCNTL <= 1;
     state <= `LOAD;
     countmode <= `LEFT;
     mode <= `LEFT;
 
 
   end
-  if (count[8] === 1  && actualstate == `LOAD) begin
-    misobuffCNTL <= 0;
-    start <= 1;
+  if (count[8] == 1  && actualstate == `LOAD) begin
     state <= `MULT;
-    countmode <= `HOLD;
+    countmode <= `PLOAD;
     mode <= `HOLD;
-    start <= 0;
-  end
+    misobuffCNTL <= 0;
 
-  if (done == 1 && actualstate == `MULT) begin
+
+
+  end
+  // turning start signal off
+  if (count == 8'b1  && actualstate == `MULT && doneLONG != 1) begin
+    start <= 1;
+    countmode <= `HOLD;
+  end
+  // turning start signal off
+
+
+  if (doneLONG === 1 && actualstate === `MULT) begin
     misobuffCNTL <= 0;
     start <= 0;
     state <= `MULTRES;
     mode <= `PLOAD;
     countmode <= `PLOAD;
+
   end
 
   if (actualstate == `MULTRES) begin
@@ -77,6 +89,7 @@ always @(posedge sclk) begin
     mode <= `PLOAD;
     countmode <= `LEFT;
     state <= `MISORESULT;
+    doneLONG <= 0;
 
   end
 
@@ -86,4 +99,12 @@ always @(posedge sclk) begin
       state <= `WAIT;
   end
 end
+always @(negedge sclk) begin
+  if(start == 1)
+  start <= 0;
+  end
+always @(*) begin
+  if(done==1 && actualstate == `MULT)
+  doneLONG <=1;
+  end
 endmodule
