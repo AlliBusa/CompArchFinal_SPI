@@ -44,7 +44,7 @@ module loot
 	 // This means we just set the mode of the shift reg to be controlled by the MSB of the shift reg.
    assign modulator = {1'b1,fCount};
 
-   shiftregister8 #(9) counter(.clk(clk),
+   shiftregister9 counter(.clk(clk),
     													 .serialClkposedge(clkedge),
     													 .mode({1'b1,fCount}),
     													 .parallelIn(9'b1),
@@ -135,12 +135,13 @@ module lute
 	 reg 			mod_select; // 1 when in data phase, 0 when in addr phase
 	 wire [8:0] count;
 	 wire 			fCount;
+	 reg 				fcRes; // Reg that stores fCount. Helps get around init issue of fCount
 	 reg 				csel = `CSOFF;
 
 	 // Same reasoning for this shift reg as the one in loot (FSM for baby)
-   shiftregister8 #(9) counter(.clk(clk),
+   shiftregister9 counter(.clk(clk),
     													 .serialClkposedge(clkedge),
-    													 .mode({1'b1,fCount}),
+    													 .mode({1'b1,fcRes}),
     													 .parallelIn(9'b1),
     													 .serialIn(1'b0),
     													 .parallelOut(count),
@@ -153,14 +154,18 @@ module lute
 	 registerDFF storemisobuffctrl(.clk(clk),
 																 .q(BUF_E),
 																 .d(sout),
-																 .wrenable(fCount));
+																 .wrenable(fcRes));
+
+	 initial begin
+			fcRes = 1;
+	 end
 
 	 // Here's a nifty thing: we don't actually need to care if we *need* to load in data from memory!
 	 // Here, we just say load it after we've got all the address bits and R/W bit - after 8 cycles
 	 // We do that by setting it equal to fCount - which is only true after 8 cycles
 	 // Even if we didn't need to load it, it's fine, since it'll get shifted out anyways
 	 // Loading doesn't affect our memory, so it works out all fine
-	 assign SR_WE = {1'b1,fCount};
+	 assign SR_WE = {1'b1,fcRes};
 
 	 // Initialize when chip select goes low
 	 always @(negedge cs) begin
@@ -176,6 +181,10 @@ module lute
 			DM_WE <= 0; // Don't write anything to memory or address flop
 			ADDR_WE <= 0;
 			mod_select <= `ADDRMOD; // Ready FSM to start off in Address mode
+	 end
+
+	 always @(posedge clk) begin
+			fcRes = fCount;
 	 end
 
    always @(clkedge) begin // Always update on serial clock
