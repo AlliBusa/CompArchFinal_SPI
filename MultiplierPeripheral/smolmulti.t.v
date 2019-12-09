@@ -29,35 +29,40 @@ module testSmolMulti();
       $dumpvars();
 			@(posedge SCLK);
 			CS<=1;
-			#400
+			@(posedge SCLK);
 			// Input A: 0001
-			MOSI = 1'b0; #400
-			MOSI = 1'b0; #400
-			MOSI = 1'b0; #400
-			MOSI = 1'b1; #400
+			MOSI = 1'b0;
+      @(posedge SCLK);
+			MOSI = 1'b0;
+      @(posedge SCLK);
+			MOSI = 1'b0;
+      @(posedge SCLK);
+			MOSI = 1'b1;
 
 			// Input B: 0110
-			MOSI = 1'b0; #400
-			MOSI = 1'b1; #400
-			MOSI = 1'b1; #400
-			MOSI = 1'b0; #400
- #10000
-				 $display("MISO : %b", MISO); #400
-				 $display("MISO : %b", MISO); #400
-				 $display("MISO : %b", MISO); #400
-				 $display("MISO : %b", MISO); #400
-				 $display("MISO : %b", MISO); #400
-				 $display("MISO : %b", MISO); #400
-				 $display("MISO : %b", MISO); #400
-				 $display("MISO : %b", MISO); #400
+      @(posedge SCLK);
+			MOSI = 1'b0;
+      @(posedge SCLK);
+			MOSI = 1'b1;
+      @(posedge SCLK);
+			MOSI = 1'b1;
+      @(posedge SCLK);
+			MOSI = 1'b0;
+
+
+
 			// `ASSERT_EQ(MISO, 1'b0, "Failed"); #200
 			@(posedge SCLK);
+      @(posedge SCLK);
+      @(posedge SCLK);
+      @(posedge SCLK);
 			if(MISO !== 0) begin
 				 $display("Failed, little boy: 1.");
+         $display("MISO : %b", MISO);
 				 passed = 1;
 				 // $finish;
 			end
-							 $display("MISO : %b", MISO);
+
 
 			@(posedge SCLK);
 			if(MISO !== 0) begin

@@ -18,10 +18,10 @@ module FSMult
   output reg  [1:0] mode,
   output  reg start,
   output  reg misobuffCNTL,
-  output  [2:0] actualstate
+  output  reg [2:0] state
 );
-reg [2:0] state;
-//wire [2:0] actualstate;
+//reg [2:0] state;
+//wire [2:0] state;
 wire [8:0] count;
 reg wrenableSTATE;
 reg [1:0] countmode ;
@@ -39,7 +39,7 @@ initial begin
 
 end
 // D Flip FLop to hold the state
-registerDFFPARA #(3) FSMstates(.q(actualstate), .d(state), .wrenable(wrenableSTATE), .clk(sclk));
+// registerDFFPARA #(3) FSMstates(.q(state), .d(state), .wrenable(wrenableSTATE), .clk(sclk));
 
 // Counter
 countah #(9) counter(.parallelOut(count),
@@ -49,7 +49,7 @@ countah #(9) counter(.parallelOut(count),
                            .serialIn(1'b0));
 
 always @(posedge sclk) begin
-  if (cs === 1 && actualstate == `WAIT) begin
+  if (cs === 1 && state == `WAIT) begin
     misobuffCNTL <= 0;
     state <= `LOAD;
     countmode <= `LEFT;
@@ -57,9 +57,9 @@ always @(posedge sclk) begin
 
 
   end
-  if (count[8] == 1  && actualstate == `LOAD) begin
+  if (count[8] == 1  && state == `LOAD) begin
     state <= `MULT;
-    countmode <= `PLOAD;
+    countmode <= `HOLD;
     mode <= `HOLD;
     misobuffCNTL <= 0;
 
@@ -67,14 +67,14 @@ always @(posedge sclk) begin
 
   end
   // turning start signal off
-  if (count == 8'b1  && actualstate == `MULT && doneLONG != 1) begin
+  if (state == `MULT && doneLONG != 1) begin
     start <= 1;
     countmode <= `HOLD;
   end
   // turning start signal off
 
 
-  if (doneLONG === 1 && actualstate === `MULT) begin
+  if (doneLONG === 1 && state === `MULT) begin
     misobuffCNTL <= 0;
     start <= 0;
     state <= `MULTRES;
@@ -83,7 +83,7 @@ always @(posedge sclk) begin
 
   end
 
-  if (actualstate == `MULTRES) begin
+  if (state == `MULTRES) begin
     misobuffCNTL <= 1;
     start <= 0;
     mode <= `LEFT;
@@ -93,8 +93,8 @@ always @(posedge sclk) begin
 
   end
 
-  if (count[8] === 1 && actualstate == `MISORESULT) begin
-      misobuffCNTL <= 1;
+  if (count[8] === 1 && state == `MISORESULT) begin
+      misobuffCNTL <= 0;
       mode <= `LEFT;
       state <= `WAIT;
   end
@@ -104,7 +104,7 @@ always @(negedge sclk) begin
   start <= 0;
   end
 always @(*) begin
-  if(done==1 && actualstate == `MULT)
+  if(done==1 && state == `MULT)
   doneLONG <=1;
   end
 endmodule
