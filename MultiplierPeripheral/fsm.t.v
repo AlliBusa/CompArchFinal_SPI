@@ -45,25 +45,37 @@ module testFSM();
   @(posedge sclk);
     cs <= 1;
   @(negedge sclk);
+  @(negedge sclk);
+  @(negedge sclk);
   // check that the state shifted
+    $display("actual state: %b", actualstate);
   `ASSERT_EQ(actualstate, `LOAD, "state shift WAIT>LOAD failed")
 
+
   // test 2
-  #1600
+  #900
   @(negedge sclk);
   // check that the state shifted
+      $display("actual state: %b", actualstate);
   `ASSERT_EQ(actualstate, `MULT, "state shift LOAD>MULTI failed")
+
     done <= 1;
+    cs <= 0;
 
   // test 3
+
+  @(negedge sclk);
   @(negedge sclk);
   // check that the state shifted
+      $display("actual state: %b", actualstate);
   `ASSERT_EQ(actualstate, `MULTRES, "state shift MULTI>MULTRES failed")
 
+  done <= 0;
   // test 4
-  #1600
+  @(negedge sclk);
   @(negedge sclk);
   // check that the state shifted
+      $display("actual state: %b", actualstate);
   `ASSERT_EQ(actualstate, `MISORESULT, "state shift MULTRES>MISORESULT failed")
 
   $finish();
