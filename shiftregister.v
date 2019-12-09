@@ -66,6 +66,7 @@ module shiftregister9
   input               serialIn//what value should we put in all the new spaces created during the shift?
 );
 reg [8:0] memory;
+	 wire [1:0] tricks;
     // Register to hold current shift register value
     // Initial value set to "width" bits of zeros using Verilog repetition operator
     initial begin
@@ -74,24 +75,24 @@ reg [8:0] memory;
 
     assign parallelOut = memory;
     assign serialOut = memory[8];
+	 assign tricks = mode;
 
     always @(posedge clk) begin
-          if (serialClkposedge == 1) begin
-          case (mode)
-              `HOLD:  begin memory <= memory[8:0];//mantains what it currently has in memory
-                      // assign serialOut = memory[7];
-                      end
-              `LEFT:  begin memory <= {memory[7:0], serialIn}; //shift string to the left, fill new spaces with zeroes
-                      // assign serialOut = memory[width-2];
-                      end
-              `RIGHT:  begin memory <= {serialIn,memory[8:1]};  //sift string to right, fill new spaces with zeroes
-                      // assign serialOut = memory[serialIn];
-                      end
-              `PLOAD:  begin memory <= parallelIn;  //load in a new value that is coming in as parallelIn into the shiftreg
-                      // assign serialOut = memory[width-1];
-                      end
-          endcase
-          // serialOut = memory[7];
-        end
+       case (tricks)
+         `HOLD:  begin memory <= memory[8:0];
+         end
+         `LEFT:  begin
+						if (serialClkposedge == 1) begin
+							 memory <= {memory[7:0], serialIn};
+						end
+         end
+         `RIGHT:  begin
+						if (serialClkposedge == 1) begin
+							 memory <= {serialIn,memory[8:1]};
+						end
+         end
+         `PLOAD:  begin memory <= parallelIn;
+         end
+       endcase // case (mode)
     end
 endmodule
