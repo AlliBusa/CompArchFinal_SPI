@@ -184,7 +184,20 @@ module lute
 	 end
 
 	 always @(posedge clk) begin
+			#1
 			fcRes = fCount;
+			if (fCount == 1) begin
+				 case(mod_select)
+					 `ADDRMOD: begin
+							mod_select <= `DATAMOD;
+					 end
+					 `DATAMOD: begin
+							mod_select <= `ADDRMOD;
+							if (BUF_E == 0)
+								DM_WE <= fCount;
+					 end
+				 endcase // case (mod_select)
+			end
 	 end
 
    always @(clkedge) begin // Always update on serial clock
@@ -197,17 +210,17 @@ module lute
 							ADDR_WE <= count[7];
 							// We never write to the data memory during the memory during address stages
 							DM_WE <= 0;
-							if (fCount == 1) // We've reached 8 cycles if fCount is 1. Switch to DATAMOD.
-								mod_select <= `DATAMOD;
+							// if (fCount == 1) // We've reached 8 cycles if fCount is 1. Switch to DATAMOD.
+							// 	mod_select <= `DATAMOD;
 					 end
 					 `DATAMOD: begin
 							ADDR_WE <= 0; // Never write to the address flop in the data stage.
 							// If MISOBUFF is 0, then we're in the write to smol boi stage.
 							// Open up the memory then - but only write after 8 cycles, when fCount is 1.
-							if (BUF_E == 0)
-								DM_WE <= fCount;
-							if (fCount == 1) // We've reached 8 cycles if fCount is 1. Switch to ADDRMOD.
-								mod_select <= `ADDRMOD;
+							// if (BUF_E == 0)
+							// 	DM_WE <= fCount;
+							// if (fCount == 1) // We've reached 8 cycles if fCount is 1. Switch to ADDRMOD.
+							// 	mod_select <= `ADDRMOD;
 					 end
 				 endcase // case (mod_select)
 			end // if (csel == `CSON)
