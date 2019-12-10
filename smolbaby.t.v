@@ -34,11 +34,11 @@ module testSmolMulti();
 			// Input A: 0001
 			MOSI = 1'b0;
       @(posedge SCLK);
-			MOSI = 1'b0;
-      @(posedge SCLK);
-			MOSI = 1'b0;
-      @(posedge SCLK);
 			MOSI = 1'b1;
+      @(posedge SCLK);
+			MOSI = 1'b0;
+      @(posedge SCLK);
+			MOSI = 1'b0;
 
 			// Input B: 0110
       @(posedge SCLK);
@@ -84,7 +84,7 @@ module testSmolMulti();
 			$display("MISO : %b", multMISO);
 			@(posedge SCLK);
 
-			if(multMISO !== 0) begin
+			if(multMISO !== 1) begin
 				 $display("Failed, little boy: 4.");
 				 passed = 1;
 				 $finish;
@@ -93,7 +93,7 @@ module testSmolMulti();
 			$display("MISO : %b", multMISO);
 			@(posedge SCLK);
 
-			if(multMISO !== 0) begin
+			if(multMISO !== 1) begin
 				 $display("Failed, little boy: 5.");
 				 passed = 1;
 				 $finish;
@@ -102,7 +102,7 @@ module testSmolMulti();
 			$display("MISO : %b", multMISO);
 			@(posedge SCLK);
 
-			if(multMISO !== 1) begin
+			if(multMISO !== 0) begin
 				 $display("Failed, little boy: 6.");
 				 $display("Expected MISO : 1");
 				 passed = 1;
@@ -112,7 +112,7 @@ module testSmolMulti();
 			$display("MISO : %b", multMISO);
 			@(posedge SCLK);
 
-			if(multMISO !== 1) begin
+			if(multMISO !== 0) begin
 				 $display("Failed, little boy: 7.");
 				 passed = 1;
 				 $finish;
@@ -128,14 +128,6 @@ module testSmolMulti();
 			end
 			rc7=multMISO;
 			$display("MISO : %b", multMISO);
-			// `ASSERT_EQ(MISO, 1'b0, "Failed"); #200
-			// if(MISO == 1'b0)
-			// `ASSERT_EQ(MISO, 1'b1, "Failed"); #200
-			// `ASSERT_EQ(MISO, 1'b1, "Failed"); #200
-			// `ASSERT_EQ(MISO, 1'b0, "Failed"); #200
-			// `ASSERT_EQ(MISO, 1'b0, "Failed"); #200
-			// `ASSERT_EQ(MISO, 1'b1, "Failed"); #200
-			// `ASSERT_EQ(MISO, 1'b1, "Failed"); #200
 
 			if (passed) $display("Failed.");
 			$display("Input to multiplier: A = 0001, B = 0110");
