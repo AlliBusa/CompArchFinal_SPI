@@ -12,6 +12,7 @@ module testSmolMulti();
    wire multMISO, memMISO;
    reg 	passed =0;
 	 reg 	rc0,rc1,rc2,rc3,rc4,rc5,rc6,rc7;
+	 reg 	sc0,sc1,sc2,sc3,sc4,sc5,sc6,sc7;
 
    initial CLK=0;
    always #10 CLK = !CLK;
@@ -49,8 +50,6 @@ module testSmolMulti();
       @(posedge SCLK);
 			MOSI = 1'b0;
 
-
-
 			// `ASSERT_EQ(MISO, 1'b0, "Failed"); #200
 			@(posedge SCLK);
       @(posedge SCLK);
@@ -74,7 +73,7 @@ module testSmolMulti();
 				 $finish;
 			end
 			rc1=multMISO;
-							 $display("MISO : %b", multMISO);
+			$display("MISO : %b", multMISO);
 			@(posedge SCLK);
 			if(multMISO !== 0) begin
 				 $display("Failed, little boy: 3.");
@@ -82,7 +81,7 @@ module testSmolMulti();
 				 $finish;
 			end
 			rc2=multMISO;
-							 $display("MISO : %b", multMISO);
+			$display("MISO : %b", multMISO);
 			@(posedge SCLK);
 
 			if(multMISO !== 0) begin
@@ -91,7 +90,7 @@ module testSmolMulti();
 				 $finish;
 			end
 			rc3=multMISO;
-							 $display("MISO : %b", multMISO);
+			$display("MISO : %b", multMISO);
 			@(posedge SCLK);
 
 			if(multMISO !== 0) begin
@@ -100,7 +99,7 @@ module testSmolMulti();
 				 $finish;
 			end
 			rc4=multMISO;
-							 $display("MISO : %b", multMISO);
+			$display("MISO : %b", multMISO);
 			@(posedge SCLK);
 
 			if(multMISO !== 1) begin
@@ -110,7 +109,7 @@ module testSmolMulti();
 				 $finish;
 			end
 			rc5=multMISO;
-							 $display("MISO : %b", multMISO);
+			$display("MISO : %b", multMISO);
 			@(posedge SCLK);
 
 			if(multMISO !== 1) begin
@@ -119,7 +118,7 @@ module testSmolMulti();
 				 $finish;
 			end
 			rc6=multMISO;
-							 $display("MISO : %b", multMISO);
+			$display("MISO : %b", multMISO);
 			@(posedge SCLK);
 
 			if(multMISO !== 0) begin
@@ -129,138 +128,162 @@ module testSmolMulti();
 			end
 			rc7=multMISO;
 			$display("MISO : %b", multMISO);
-				// `ASSERT_EQ(MISO, 1'b0, "Failed"); #200
-				// if(MISO == 1'b0)
-				// `ASSERT_EQ(MISO, 1'b1, "Failed"); #200
-				// `ASSERT_EQ(MISO, 1'b1, "Failed"); #200
-				// `ASSERT_EQ(MISO, 1'b0, "Failed"); #200
-				// `ASSERT_EQ(MISO, 1'b0, "Failed"); #200
-				// `ASSERT_EQ(MISO, 1'b1, "Failed"); #200
-				// `ASSERT_EQ(MISO, 1'b1, "Failed"); #200
+			// `ASSERT_EQ(MISO, 1'b0, "Failed"); #200
+			// if(MISO == 1'b0)
+			// `ASSERT_EQ(MISO, 1'b1, "Failed"); #200
+			// `ASSERT_EQ(MISO, 1'b1, "Failed"); #200
+			// `ASSERT_EQ(MISO, 1'b0, "Failed"); #200
+			// `ASSERT_EQ(MISO, 1'b0, "Failed"); #200
+			// `ASSERT_EQ(MISO, 1'b1, "Failed"); #200
+			// `ASSERT_EQ(MISO, 1'b1, "Failed"); #200
 
-				if (passed) $display("Failed.");
-			$display("%b,%b,%b,%b,%b,%b,%b,%b", rc0,rc1,rc2,rc3,rc4,rc5,rc6,rc7);
+			if (passed) $display("Failed.");
+			$display("Input to multiplier: A = 0001, B = 0110");
+			$display("Result of multiplier: %b%b%b%b%b%b%b%b", rc0,rc1,rc2,rc3,rc4,rc5,rc6,rc7);
 			multCS <= 0;
+
+			@(posedge SCLK);
 			memCS = 0;
-	MOSI = 1'b0; #200
-  MOSI = 1'b1; #200
-  MOSI = 1'b0; #200
-  MOSI = 1'b1; #200
-  MOSI = 1'b0; #200
-  MOSI = 1'b1; #200
-  MOSI = 1'b0; #200
-  MOSI = 1'b1; #200
-		#200
+			MOSI = 1'b0;
+			@(posedge SCLK);
+			MOSI = 1'b1;
+			@(posedge SCLK);
+			MOSI = 1'b0;
+			@(posedge SCLK);
+			MOSI = 1'b1;
+			@(posedge SCLK);
+			MOSI = 1'b0;
+			@(posedge SCLK);
+			MOSI = 1'b1;
+			@(posedge SCLK);
+			MOSI = 1'b0;
+			@(posedge SCLK);
+			MOSI = 1'b1;
+			@(posedge SCLK);
+			@(posedge SCLK);
 
-  // Input number: 00110011
-  MOSI = rc0; #200
-	MOSI = rc1; #200
-	MOSI = rc2; #200
-	MOSI = rc3; #200
-	MOSI = rc4; #200
-	MOSI = rc5; #200
-	MOSI = rc6; #200
-	MOSI = rc7; #200
-	 #200
+			// Input number: 00110011
+			MOSI = rc0;
+			@(posedge SCLK);
+			MOSI = rc1;
+			@(posedge SCLK);
+			MOSI = rc2;
+			@(posedge SCLK);
+			MOSI = rc3;
+			@(posedge SCLK);
+			MOSI = rc4;
+			@(posedge SCLK);
+			MOSI = rc5;
+			@(posedge SCLK);
+			MOSI = rc6;
+			@(posedge SCLK);
+			MOSI = rc7;
+			@(posedge SCLK);
+			@(posedge SCLK);
 
-  // Input addr: 1(RW) + 1010101
-  MOSI = 1'b1; #200
-  MOSI = 1'b1; #200
-  MOSI = 1'b0; #200
-  MOSI = 1'b1; #200
-  MOSI = 1'b0; #200
-  MOSI = 1'b1; #200
-  MOSI = 1'b0; #200
-  MOSI = 1'b1; #200
-		#200
-		#200
-		#200
+			// Input addr: 1(RW) + 1010101
+			MOSI = 1'b1;
+			@(posedge SCLK);
+			MOSI = 1'b1;
+			@(posedge SCLK);
+			MOSI = 1'b0;
+			@(posedge SCLK);
+			MOSI = 1'b1;
+			@(posedge SCLK);
+			MOSI = 1'b0;
+			@(posedge SCLK);
+			MOSI = 1'b1;
+			@(posedge SCLK);
+			MOSI = 1'b0;
+			@(posedge SCLK);
+			MOSI = 1'b1;
+			@(posedge SCLK);
+			@(posedge SCLK);
+			@(posedge SCLK);
 
-  // `ASSERT_EQ(MISO, 1'b0, "Failed"); #200
-  if(memMISO !== rc0) begin
-    $display("Failed, little boy: 0.");
-		$display("MISO: %b", memMISO);
-    // $display("MISO:");
-    passed = 1;
-    // $finish;
-  end
-  #200
+			@(posedge SCLK);
+			if(memMISO !== rc0) begin
+				 $display("Failed, little boy: 0.");
+				 $display("MISO: %b", memMISO);
+				 passed = 1;
+				 $finish;
+			end
+			sc0=memMISO;
+			$display("MISO: %b", memMISO);
 
-  if(memMISO !== rc1) begin
-    $display("Failed, little boy: 1.");
-		$display("MISO: %b", memMISO);
-    passed = 1;
-    // $finish;
-  end
-  #200
+		  @(posedge SCLK);
+			if(memMISO !== rc1) begin
+				 $display("Failed, little boy: 1.");
+				 $display("MISO: %b", memMISO);
+				 passed = 1;
+				 // $finish;
+			end
+			sc1=memMISO;
+			$display("MISO: %b", memMISO);
 
-  if(memMISO !== rc2) begin
-    $display("Failed, little boy: 2.");
-		$display("MISO: %b", memMISO);
-    passed = 1;
-    // $finish;
-  end
-  #200
+			@(posedge SCLK);
+			if(memMISO !== rc2) begin
+				 $display("Failed, little boy: 2.");
+				 $display("MISO: %b", memMISO);
+				 passed = 1;
+				 // $finish;
+			end
+			sc2=memMISO;
+			$display("MISO: %b", memMISO);
 
-  if(memMISO !== rc3) begin
-    $display("Failed, little boy: 3.");
-		$display("MISO: %b", memMISO);
-    passed = 1;
-    // $finish;
-  end
-  #200
+			@(posedge SCLK);
+			if(memMISO !== rc3) begin
+				 $display("Failed, little boy: 3.");
+				 $display("MISO: %b", memMISO);
+				 passed = 1;
+				 // $finish;
+			end
+			sc3=memMISO;
+			$display("MISO: %b", memMISO);
 
-  if(memMISO !== rc4) begin
-    $display("Failed, little boy: 4.");
-		$display("MISO: %b", memMISO);
-    passed = 1;
-    // $finish;
-  end
-  #200
+			@(posedge SCLK);
+			if(memMISO !== rc4) begin
+				 $display("Failed, little boy: 4.");
+				 $display("MISO: %b", memMISO);
+				 passed = 1;
+				 // $finish;
+			end
+			sc4=memMISO;
+			$display("MISO: %b", memMISO);
 
-  if(memMISO !== rc5) begin
-    $display("Failed, little boy: 5.");
-		$display("MISO: %b", memMISO);
-    passed = 1;
-    // $finish;
-  end
-  #200
+			@(posedge SCLK);
+			if(memMISO !== rc5) begin
+				 $display("Failed, little boy: 5.");
+				 $display("MISO: %b", memMISO);
+				 passed = 1;
+				 // $finish;
+			end
+			sc5=memMISO;
+			$display("MISO: %b", memMISO);
 
-  if(memMISO !== rc6) begin
-    $display("Failed, little boy: 6.");
-		$display("MISO: %b", memMISO);
-    passed = 1;
-    // $finish;
-  end
-  #200
+			@(posedge SCLK);
+			if(memMISO !== rc6) begin
+				 $display("Failed, little boy: 6.");
+				 $display("MISO: %b", memMISO);
+				 passed = 1;
+				 // $finish;
+			end
+			sc6=memMISO;
+			$display("MISO: %b", memMISO);
 
-  if(memMISO !== rc7) begin
-    $display("Failed, little boy: 7.");
-		$display("MISO: %b", memMISO);
-    passed = 1;
-    // $finish;
-  end
-		 #200
-		 $display("MISO: %b", memMISO);
-		 #200
-		 $display("MISO: %b", memMISO);
-		 #200
-		 $display("MISO: %b", memMISO);
-		 #200
-		 $display("MISO: %b", memMISO);
-		 #200
-		 $display("MISO: %b", memMISO);
-  #800
-  // `ASSERT_EQ(MISO, 1'b0, "Failed"); #200
-  // if(MISO == 1'b0)
-  // `ASSERT_EQ(MISO, 1'b1, "Failed"); #200
-  // `ASSERT_EQ(MISO, 1'b1, "Failed"); #200
-  // `ASSERT_EQ(MISO, 1'b0, "Failed"); #200
-  // `ASSERT_EQ(MISO, 1'b0, "Failed"); #200
-  // `ASSERT_EQ(MISO, 1'b1, "Failed"); #200
-  // `ASSERT_EQ(MISO, 1'b1, "Failed"); #200
+			@(posedge SCLK);
+			if(memMISO !== rc7) begin
+				 $display("Failed, little boy: 7.");
+				 $display("MISO: %b", memMISO);
+				 passed = 1;
+				 // $finish;
+			end
+			sc7=memMISO;
+			$display("MISO: %b", memMISO);
+			$display("What's stored in memory: %b%b%b%b%b%b%b%b",sc0,sc1,sc2,sc3,sc4,sc5,sc6,sc7);
 
-  if (passed) $display("Failed.");
-  #20 $finish;
+			if (passed) $display("Failed.");
+			else $display("Passed!");
+			#20 $finish;
    end
 endmodule
