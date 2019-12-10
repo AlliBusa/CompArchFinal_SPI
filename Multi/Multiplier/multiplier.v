@@ -5,7 +5,7 @@
 `include "Multi/Multiplier/shiftregmodes.v"
 `include "Multi/Multiplier/multiplexer.v"
 `include "Multi/Multiplier/adder.v"
-module register8
+module register8multi
 #(parameter width = 4)
 (
 output reg	[width-1:0]q,
@@ -32,7 +32,7 @@ module multiplier
   input                 clk,   // Output transitions synchronized to posedge
   input                 start  // High for one cycle when inputs A and B are valid, initiates multiplication sequence
 );
-  
+
 
   localparam  START = 2'b00;
   localparam  ADD = 2'b01;
@@ -65,7 +65,7 @@ module multiplier
 
   adder #(.width(2*width)) adding(.out(temp),.in0(next_add),.in1(res));
   //register8 #(.width(width*2)) Mregister(.q(res), .clk(clk), .d(mid), .wrenable(1));
-  register8 #(.width(width*2)) Sregister(.q(res), .clk(clk), .d(sum), .wrenable(add));
+  register8multi #(.width(width*2)) Sregister(.q(res), .clk(clk), .d(sum), .wrenable(add));
   muxnto1byn #(.width(width*2)) starter(.address(start),.input0(temp),.input1({(2*width){1'b0}}),.out(sum));
   muxnto1byn #(.width(width*2))  decider(.address(BshiftedOutput[0]),.input0({(2*width){1'b0}}),.input1(AshiftedOutput),.out(next_add));
 

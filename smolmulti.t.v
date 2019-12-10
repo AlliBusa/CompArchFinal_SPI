@@ -11,12 +11,13 @@ module testSmolMulti();
    reg CS;
    wire MISO;
    reg 	passed =0;
+	 reg 	rc0,rc1,rc2,rc3,rc4,rc5,rc6,rc7;
 
    initial CLK=0;
    always #10 CLK = !CLK;
 
    initial SCLK =0;
-   always #200 SCLK=!SCLK;
+   always #100 SCLK=!SCLK;
 
    SmolBoi multismol(.MOSI(MOSI),.SCLK(SCLK),.CLK(CLK),.CS(CS),.MISO(MISO));
 
@@ -55,44 +56,50 @@ module testSmolMulti();
 			@(posedge SCLK);
       @(posedge SCLK);
       @(posedge SCLK);
+			@(posedge SCLK);
       @(posedge SCLK);
 			if(MISO !== 0) begin
 				 $display("Failed, little boy: 1.");
          $display("MISO : %b", MISO);
 				 passed = 1;
-				 // $finish;
+				 $finish;
 			end
+			rc0=MISO;
 
 
 			@(posedge SCLK);
 			if(MISO !== 0) begin
 				 $display("Failed, little boy: 2.");
 				 passed = 1;
-				 // $finish;
+				 $finish;
 			end
+			rc1=MISO;
 							 $display("MISO : %b", MISO);
 			@(posedge SCLK);
 			if(MISO !== 0) begin
 				 $display("Failed, little boy: 3.");
 				 passed = 1;
-				 // $finish;
+				 $finish;
 			end
+			rc2=MISO;
 							 $display("MISO : %b", MISO);
 			@(posedge SCLK);
 
 			if(MISO !== 0) begin
 				 $display("Failed, little boy: 4.");
 				 passed = 1;
-				 // $finish;
+				 $finish;
 			end
+			rc3=MISO;
 							 $display("MISO : %b", MISO);
 			@(posedge SCLK);
 
 			if(MISO !== 0) begin
 				 $display("Failed, little boy: 5.");
 				 passed = 1;
-				 // $finish;
+				 $finish;
 			end
+			rc4=MISO;
 							 $display("MISO : %b", MISO);
 			@(posedge SCLK);
 
@@ -100,24 +107,27 @@ module testSmolMulti();
 				 $display("Failed, little boy: 6.");
 				 $display("Expected MISO : 1");
 				 passed = 1;
-				 // $finish;
+				 $finish;
 			end
+			rc5=MISO;
 							 $display("MISO : %b", MISO);
 			@(posedge SCLK);
 
 			if(MISO !== 1) begin
 				 $display("Failed, little boy: 7.");
 				 passed = 1;
-				 // $finish;
+				 $finish;
 			end
+			rc6=MISO;
 							 $display("MISO : %b", MISO);
 			@(posedge SCLK);
 
 			if(MISO !== 0) begin
 				 $display("Failed, little boy: 8.");
 				 passed = 1;
-				 // $finish;
+				 $finish;
 			end
+			rc7=MISO;
 			$display("MISO : %b", MISO);
 			#200
 				// `ASSERT_EQ(MISO, 1'b0, "Failed"); #200
@@ -130,6 +140,7 @@ module testSmolMulti();
 				// `ASSERT_EQ(MISO, 1'b1, "Failed"); #200
 
 				if (passed) $display("Failed.");
+			$display("%b,%b,%b,%b,%b,%b,%b,%b", rc0,rc1,rc2,rc3,rc4,rc5,rc6,rc7);
 			#20 $finish;
    end
 endmodule

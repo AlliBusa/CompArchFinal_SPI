@@ -1,7 +1,7 @@
 // Single-bit D Flip-Flop with enable
 //   Positive edge triggered
 
-module registerDFF
+module registerDFFmulti
 (
 output reg	q,
 input		d,

@@ -5,7 +5,7 @@
 //    3) Creates pulses at edge transitions
 //------------------------------------------------------------------------
 
-module inputconditioner
+module inputconditionermulti
 (
 input 	    clk,            // Clock domain to synchronize input to
 input	    noisysignal,    // (Potentially) noisy input signal

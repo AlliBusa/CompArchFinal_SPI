@@ -3,7 +3,7 @@
 `include "Multi/Multiplier/multiplier.v"
 `include "Multi/shiftregister.v"
 
-module SmolBoi (
+module SmolMulti (
   input MOSI,
   input SCLK,
   input CLK,
@@ -21,19 +21,19 @@ module SmolBoi (
 	 FSMult fsm(.sclk(SCLKPosEdge),.clk(CLK),.cs(CS),.mode(mode),
 							.start(start),.misobuffCNTL(MISOBuff),.done(done));
 
-   inputconditioner MOSIinputConditioner (.clk(CLK),
+   inputconditionermulti MOSIinputConditioner (.clk(CLK),
 																					.noisysignal(MOSI),
 																					.conditioned(MOSICon),
 																					.positiveedge(MOSIPosEdge),
 																					.negativeedge(MOSINegEdge));
 
-   inputconditioner SCLKinputConditioner (.clk(CLK),
+   inputconditionermulti SCLKinputConditioner (.clk(CLK),
 																					.noisysignal(SCLK),
 																					.conditioned(SCLKCon),
 																					.positiveedge(SCLKPosEdge),
 																					.negativeedge(SCLKNegEdge));
 
-   inputconditioner CSinputConditioner (.clk(CLK),
+   inputconditionermulti CSinputConditioner (.clk(CLK),
                                         .noisysignal(CS),
                                         .conditioned(CSCon),
                                         .positiveedge(CSPosEdge),
