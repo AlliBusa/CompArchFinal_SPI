@@ -1,10 +1,10 @@
 //------------------------------------------------------------------------
 // Sequential multiplier
 //------------------------------------------------------------------------
-`include "Multiplier/shiftreg.v"
-`include "Multiplier/shiftregmodes.v"
-`include "Multiplier/multiplexer.v"
-`include "Multiplier/adder.v"
+`include "Multi/Multiplier/shiftreg.v"
+`include "Multi/Multiplier/shiftregmodes.v"
+`include "Multi/Multiplier/multiplexer.v"
+`include "Multi/Multiplier/adder.v"
 module register8
 #(parameter width = 4)
 (

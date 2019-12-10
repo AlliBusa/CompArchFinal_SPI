@@ -1,5 +1,5 @@
 // `include "shiftregister.v"
-`include "shiftregmodes.v"
+`include "Memory/shiftregmodes.v"
 // `include "dflipflop.v"
 
 // `define CSON 1'b0

@@ -1,10 +1,10 @@
 // Top level module for SPI communication Smol Boi
 
-`include "datamemory.v"
-`include "dflipflop.v"
-`include "inputconditioner.v"
-`include "shiftregister.v"
-`include "FSM.v"
+`include "Memory/datamemory.v"
+`include "Memory/dflipflop.v"
+`include "Memory/inputconditioner.v"
+`include "Memory/shiftregister.v"
+`include "Memory/FSM.v"
 
 module SmolBoi (
   input MOSI,

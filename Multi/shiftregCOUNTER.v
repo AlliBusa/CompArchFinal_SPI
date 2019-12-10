@@ -1,18 +1,8 @@
-//------------------------------------------------------------------------
-// Shift Register
-//   Parameterized width (in bits)
-//   Shift register has multiple behaviors based on mode signal:
-//     00 - hold current state
-//     01 - shift right: serialIn becomes the new MSB, LSB is dropped
-//     10 - shift left:  serialIn becomes the new LSB, MSB is dropped
-//     11 - parallel load: parallelIn replaces entire shift register contents
-//
-//   All updates to shift register state occur on the positive edge of clk
-//------------------------------------------------------------------------
+// Shift Register from Lab2 that was used in Shashank, Jordan and Alli's Lab 2
 
-`include "Multiplier/shiftregmodes.v"
+`include "Multi/Multiplier/shiftregmodes.v"
 
-module shiftregister
+module countah
 #(parameter width = 8)
 (
   output [width-1:0]  parallelOut,

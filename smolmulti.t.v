@@ -1,5 +1,5 @@
-`include "smolmulti.v"
-`timescale 1ns/1ps
+`include "Multi/smolmulti.v"
+// `timescale 1ns/1ps
 
 `define ASSERT_EQ(val, exp, msg) \
 if (val !== exp) $display("[FAIL] %s (got:b%b expected:b%b)", msg, val, exp);

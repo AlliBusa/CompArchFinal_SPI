@@ -1,4 +1,4 @@
-`include "smolboi.v"
+`include "Memory/smolboi.v"
 
 `define ASSERT_EQ(val, exp, msg) \
   if (val !== exp) $display("[FAIL] %s (got:0b%b expected:0b%b)", msg, val, exp);

@@ -10,7 +10,7 @@
 //   All updates to shift register state occur on the positive edge of clk
 //------------------------------------------------------------------------
 
-`include "shiftregmodes.v"
+`include "Multi/Multiplier/shiftregmodes.v"
 
 module shiftregister
 #(parameter width = 8)

@@ -1,7 +1,7 @@
-`include "Multiplier/shiftregmodes.v"
-`include "shiftregCOUNTER.v"
+`include "Multi/Multiplier/shiftregmodes.v"
+`include "Multi/shiftregCOUNTER.v"
 // `include "Multiplier/shiftregister.v"
-`include "dflipflop.v"
+`include "Multi/dflipflop.v"
 
 `define WAIT 3'd0
 `define LOAD 3'd1

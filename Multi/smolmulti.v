@@ -1,7 +1,7 @@
-`include "inputconditioner.v"
-`include "fsm.v"
-`include "Multiplier/multiplier.v"
-`include "shiftregister.v"
+`include "Multi/inputconditioner.v"
+`include "Multi/fsm.v"
+`include "Multi/Multiplier/multiplier.v"
+`include "Multi/shiftregister.v"
 
 module SmolBoi (
   input MOSI,
