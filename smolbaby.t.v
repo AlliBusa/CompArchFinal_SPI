@@ -23,7 +23,7 @@ module testSmolMulti();
    SmolBoi smolboi(.MOSI(MOSI),.SCLK(SCLK),.CLK(CLK),.CS(memCS),.MISO(memMISO));
 
    initial begin
-      $dumpfile("smolmulti.vcd");
+      $dumpfile("bb.vcd");
       $dumpvars();
 			multCS<=0;
 			memCS<=1;
@@ -161,7 +161,7 @@ module testSmolMulti();
 	MOSI = rc5; #200
 	MOSI = rc6; #200
 	MOSI = rc7; #200
-		#200
+	 #200
 
   // Input addr: 1(RW) + 1010101
   MOSI = 1'b1; #200
@@ -174,7 +174,7 @@ module testSmolMulti();
   MOSI = 1'b1; #200
 		#200
 		#200
-		#400
+		#200
 
   // `ASSERT_EQ(MISO, 1'b0, "Failed"); #200
   if(memMISO !== rc0) begin

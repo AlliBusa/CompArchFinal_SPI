@@ -69,12 +69,12 @@ initial count = 0;
 //                          .serialIn(0));
 
 always @(posedge sclk) begin
-if (cs === 0 && actualstate == `WAIT) begin
+if (actualstate == `WAIT) begin
   if (cs === 0) begin
     misofuff <= 0;
     actualstate <= `ADDR;
     countmode <= `LEFT;
-    mode <= `HOLD; //shift bits into shift register
+    mode <= `LEFT; //shift bits into shift register
     addressWE = 0;
     memWE = 0;
     count = 3'd0;
@@ -103,7 +103,7 @@ if (actualstate == `ADDR) begin
   else begin
 		 mode <= `LEFT;
 		 count = count + 1;
-end
+	end
 end
 
 if (actualstate == `LOADADDR) begin

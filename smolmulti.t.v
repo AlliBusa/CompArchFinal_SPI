@@ -19,7 +19,7 @@ module testSmolMulti();
    initial SCLK =0;
    always #100 SCLK=!SCLK;
 
-   SmolBoi multismol(.MOSI(MOSI),.SCLK(SCLK),.CLK(CLK),.CS(CS),.MISO(MISO));
+   SmolMulti multismol(.MOSI(MOSI),.SCLK(SCLK),.CLK(CLK),.CS(CS),.MISO(MISO));
 
    initial begin
 			CS<=0;
